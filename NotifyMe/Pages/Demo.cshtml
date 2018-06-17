@@ -1,0 +1,45 @@
+﻿@page
+@model DemoModel
+@{
+    ViewData["Title"] = "Demo";
+}
+@section Scripts
+{
+    <script type="text/javascript" src="~/js/chat.js"></script>
+}
+<h2>@ViewData["Title"]</h2>
+<h3>Demostration for chat</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading" id="accordion">
+                    <span class="glyphicon glyphicon-comment"></span> Chat
+                    <div class="btn-group pull-right">
+
+                    </div>
+                </div>
+                <div class="panel-collapse collapse in" id="collapseOne">
+                    <div class="panel-body" id="chatcontent">
+                        <ul id="messagesList" class="chat"></ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input type="hidden" value="visitor" id="txtuser" />
+                            <input id="txtmessage" maxlength="250" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                            <span class="input-group-btn">
+                                <button class="btn btn-info btn-sm" id="btnsendmessage">
+                                    Send
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
