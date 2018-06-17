@@ -27,7 +27,7 @@ namespace NotifyMe.Services
                 name = "You";//This is just for giving a static name, not needed.
             }
 
-            _connectedUsers.Add(name, Context.UserIdentifier ?? Guid.NewGuid().ToString());
+            _connectedUsers.Add(name, Context.ConnectionId ?? Guid.NewGuid().ToString());
 
             Clients.Caller.SendAsync("GiveName", name);
             return base.OnConnectedAsync();
@@ -54,10 +54,14 @@ namespace NotifyMe.Services
 
 
             var users = _connectedUsers.GetConnections(receiver);
+            var self = _connectedUsers.GetConnections(user);
             var messageContainer = CreateMessage(user, message);
 
-            //await Clients.All.SendAsync("ReceiveMessage", user, messageContainer);
-            await Clients.Users(users.ToList().AsReadOnly()).SendAsync("ReceiveMessage", user, messageContainer);
+            var receivers = users.ToList<string>();
+            receivers.AddRange(self);
+
+            var readOnly = receivers.AsReadOnly();
+            await Clients.Clients(readOnly).SendAsync("ReceiveMessage", user, messageContainer);
         }
 
         public async Task SendNotification(string message)
