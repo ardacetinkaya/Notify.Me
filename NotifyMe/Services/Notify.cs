@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
+using NotifyMe.Data;
+using NotifyMe.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,31 +11,83 @@ namespace NotifyMe.Services
 {
     public class Notify : Hub
     {
-        private static readonly Random _random = new Random(1234);
+        private static readonly Random _random = new Random(50000);
+        private static readonly object _syncLock = new object();
+        private IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
+        private NotifyDbContext _db;
 
-        private readonly static ConnectionMap<string> _connectedUsers = new ConnectionMap<string>();
-        public override Task OnConnectedAsync()
+        public Notify(IServiceProvider provider, IConfiguration configuration)
+        {
+            _serviceProvider = provider;
+            _configuration = configuration;
+            _db = (NotifyDbContext)_serviceProvider.GetService(typeof(NotifyDbContext));
+        }
+
+
+        public override async Task OnConnectedAsync()
         {
             var name = Context.User.Identity.Name;
+
+
             if (string.IsNullOrEmpty(name))
             {
-                lock (_random)
+                lock (_syncLock)
                 {
-                    var userId = _random.Next(1000, 1234);
+                    var userId = _random.Next(0, 50000);
                     name = $"WebUser{userId.ToString()}";
                 }
             }
             else
             {
-                name = "You";//This is just for giving a static name, not needed.
+                name = _configuration["HostUser:Name"];
+                await Clients.All.SendAsync("SayHello", "I'm online");
+
+            }
+            string connectionId = Context.ConnectionId ?? Guid.NewGuid().ToString();
+
+
+            var user = _db.Users.Where(u => u.UserName == name).FirstOrDefault();
+
+            bool isNew = false;
+            if (user == null)
+            {
+                isNew = true;
+                user = new User() { UserName = name };
             }
 
-            _connectedUsers.Add(name, Context.ConnectionId ?? Guid.NewGuid().ToString());
+            user.Connections = new List<Connection>();
+            user.Connections.Add(new Connection() { ConnectionID = connectionId, Connected = true, ConnectionDate = DateTime.Now });
 
-            Clients.Caller.SendAsync("GiveName", name);
-            return base.OnConnectedAsync();
+            if (isNew)
+                _db.Users.Add(user);
+            else
+                _db.Users.Update(user);
+
+            await _db.SaveChangesAsync();
+
+
+            await Clients.Caller.SendAsync("GiveName", name);
+            await base.OnConnectedAsync();
         }
 
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+
+            var connection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
+
+          
+            if (connection != null)
+            {
+                connection.Connected = false;
+                connection.DisconnectionDate = DateTime.Now;
+                _db.Connections.Update(connection);
+                await _db.SaveChangesAsync();
+
+            }
+            
+            await base.OnDisconnectedAsync(exception);
+        }
 
         public async Task SendMessage(string user, string message)
         {
@@ -50,17 +105,25 @@ namespace NotifyMe.Services
                 message = message.Substring(index + 1);
             }
             else
-                receiver = "You";
+                receiver = _configuration["HostUser:Name"];
 
 
-            var users = _connectedUsers.GetConnections(receiver);
-            var self = _connectedUsers.GetConnections(user);
+
+            var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
+            var receiverConnections = new List<string>();
+
+            var receiverUser = _db.Users.Where(u => u.UserName == receiver).Select(u => u.Id).ToList();
+
+            if (receiverUser != null)
+            {
+                receiverConnections.AddRange(_db.Connections.Where(c => receiverUser.Contains(c.UserId) && c.Connected)
+                    .Select(s => s.ConnectionID).ToList());
+            }
+            receiverConnections.Add(currentConnection.ConnectionID);
+
+
+            var readOnly = receiverConnections.AsReadOnly();
             var messageContainer = CreateMessage(user, message);
-
-            var receivers = users.ToList<string>();
-            receivers.AddRange(self);
-
-            var readOnly = receivers.AsReadOnly();
             await Clients.Clients(readOnly).SendAsync("ReceiveMessage", user, messageContainer);
         }
 
@@ -74,21 +137,13 @@ namespace NotifyMe.Services
         private string CreateMessage(string user, string message)
         {
 
-            var image = "http://placehold.it/50/FA6F57/fff&text=WU";
+            var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
 
 
-            if (user != "You")
+            if (user == _configuration["HostUser:Name"])
             {
-                //var userId = 0;
-                //lock (_random)
-                //{
-                //    userId = _random.Next(1000, 1234);
-                //}
-                //user = $"WebUser_{userId.ToString()}";
+                image = _configuration["HostUser:Image"];
             }
-            else
-                image = "http://placehold.it/50/FA6F57/fff&text=You";
-
 
             var messageContainer = "<span class=\"chat-img pull-left\">"
                            + $"          <img src=\"{image}\" alt=\"User\" class=\"img-circle\" />"

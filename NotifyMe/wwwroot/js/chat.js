@@ -32,16 +32,23 @@ connection.on("GiveName", function (name) {
     userName.value = name;
 });
 
-//connection.on("ReceiveNotification", function (message) {
-//    var li = document.createElement("li");
-//    li.classList.add("left");
-//    li.classList.add("clearfix");
-//    li.innerHTML = message;
-//    document.getElementById("generalnotification").appendChild(li);
-//});
+connection.on("SayHello", function (name) {
+    var sayHello = document.getElementById("onlinehost");
+    if (sayHello !== null) {
+        sayHello.innerHTML = name;
+    }
+});
+
+connection.on("ReceiveNotification", function (message) {
+    var li = document.createElement("li");
+    li.classList.add("left");
+    li.classList.add("clearfix");
+    li.innerHTML = message;
+    document.getElementById("generalnotification").appendChild(li);
+});
 var notification = document.getElementById("btnsendnotification");
 
-if (notification != null) {
+if (notification !== null) {
 
     document.getElementById("btnsendnotification").addEventListener("click", function (event) {
 
