@@ -11,7 +11,7 @@ namespace NotifyMe.Services
 {
     public class Notify : Hub
     {
-        private static readonly Random _random = new Random(50000);
+        private static readonly Random _random = new Random(10);
         private static readonly object _syncLock = new object();
         private IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
@@ -34,7 +34,7 @@ namespace NotifyMe.Services
             {
                 lock (_syncLock)
                 {
-                    var userId = _random.Next(0, 50000);
+                    var userId = _random.Next(0, 10);
                     name = $"WebUser{userId.ToString()}";
                 }
             }
@@ -76,7 +76,7 @@ namespace NotifyMe.Services
 
             var connection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
 
-          
+
             if (connection != null)
             {
                 connection.Connected = false;
@@ -85,7 +85,7 @@ namespace NotifyMe.Services
                 await _db.SaveChangesAsync();
 
             }
-            
+
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -123,24 +123,43 @@ namespace NotifyMe.Services
 
 
             var readOnly = receiverConnections.AsReadOnly();
-            var messageContainer = CreateMessage(user, message);
+            var messageContainer = CreateMessage(user, message, receiver);
             await Clients.Clients(readOnly).SendAsync("ReceiveMessage", user, messageContainer);
         }
 
         public async Task SendNotification(string message)
         {
-            var messageContainer = CreateMessage("You", message);
+            var messageContainer = CreateMessage(_configuration["HostUser:Name"], message);
             await Clients.All.SendAsync("ReceiveNotification", messageContainer);
         }
 
 
-        private string CreateMessage(string user, string message)
+        private  string CreateMessage(string from, string message, string to = "")
         {
+            if (!string.IsNullOrEmpty(to))
+            {
+                var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId && c.Connected).First();
+
+                if (currentConnection.Messages == null)
+                {
+                    currentConnection.Messages = new List<Message>();
+
+                }
+                currentConnection.Messages.Add(new Message()
+                {
+                    Content = message,
+                    Date = DateTime.Now,
+                    ToUser = to
+                });
+
+                _db.Connections.Update(currentConnection);
+                _db.SaveChanges();
+            }
 
             var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
 
 
-            if (user == _configuration["HostUser:Name"])
+            if (from == _configuration["HostUser:Name"])
             {
                 image = _configuration["HostUser:Image"];
             }
@@ -151,7 +170,7 @@ namespace NotifyMe.Services
                            + "     <div class=\"chat-body clearfix\">"
                            + "         <div class=\"header\">"
                            + $"             <small class=\"text-muted\"><span class=\"glyphicon glyphicon-time\"></span>{DateTime.Now.ToShortTimeString()}</small>"
-                           + $"             <strong class=\"pull-right primary-font\">{user}</strong>"
+                           + $"             <strong class=\"pull-right primary-font\">{from}</strong>"
                            + "        </div>"
                            + $"         <p>{message}"
                            + "         </p>"

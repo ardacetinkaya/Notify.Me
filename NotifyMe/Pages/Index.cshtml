@@ -6,9 +6,23 @@
 }
 
 @section Scripts
-{
-    @if (SignInManager.IsSignedIn(User)) {
+    {
+    @if (SignInManager.IsSignedIn(User))
+    {
         <script type="text/javascript" src="~/js/chat.js"></script>
+        <script>
+
+            $(".arstatus").click(function () {
+               
+                $.ajax({
+                    url: '/',
+                    data: {
+                        status: $(this).data('status')
+                    }
+                })
+
+            });
+        </script>
 
     }
 }
@@ -50,6 +64,11 @@
             </div>
             <div class="col-md-9">
                 <div class="panel panel-primary">
+                    <div style="margin:5px 5px">
+                        <button class="btn btn-success arstatus" data-status="Online" id="btnonline">Online</button>
+                        <button class="btn btn-danger arstatus" data-status="Busy" id="btnbusy">Busy</button>
+                        <button class="btn btn-warning arstatus" data-status="Away" id="btnaway">Away</button>
+                    </div>
                     <div class="panel-heading" id="accordion">
                         <span class="glyphicon glyphicon-comment"></span> Chat
                         <div class="btn-group pull-right">
