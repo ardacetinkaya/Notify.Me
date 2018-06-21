@@ -1,0 +1,17 @@
+﻿<Page
+    x:Class="NotifyMe.UWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NotifyMe.UWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="#FF9494A5">
+        <TextBlock Name="txtContent" HorizontalAlignment="Left" Margin="46,41,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Height="391" Width="724" />
+        <Button Content="Send" HorizontalAlignment="Left" Margin="585,464,0,0" VerticalAlignment="Top" Height="81" Width="183" Background="#FF5959B6" BorderBrush="#FF5959B6" FocusVisualPrimaryBrush="#FF5959B6" FocusVisualSecondaryBrush="#FF5959B6" Click="Button_Click" />
+        <TextBox Name="txtMessage" HorizontalAlignment="Left" Margin="46,482,0,0" Text="" VerticalAlignment="Top" Height="44" Width="497" FocusVisualSecondaryBrush="{x:Null}" RenderTransformOrigin="0.522,0.668"/>
+
+    </Grid>
+</Page>
