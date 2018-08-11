@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace NotifyMe.Pages.Models
+namespace NotifyMe.UI.Models
 {
     public class RegisterInputModel
     {

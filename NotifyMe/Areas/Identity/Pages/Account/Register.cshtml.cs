@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using NotifyMe.Pages.Models;
+using NotifyMe.UI.Models;
 
 namespace NotifyMe.Areas.Identity.Pages.Account
 {
