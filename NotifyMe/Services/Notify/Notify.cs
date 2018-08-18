@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using NotifyMe.Data;
 using NotifyMe.Data.Models;
 using System;
@@ -89,20 +91,14 @@ namespace NotifyMe.Services
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendMessage(string user, string message)
-        {
-            var messageContainer = CreateMessage(user, message);
-            await Clients.All.SendAsync("ReceiveMessage", user, messageContainer);
-        }
-
-        public async Task SendPrivateMessage(string user, string message)
+        public async Task SendPrivateMessage(ChatMessage message)
         {
             var receiver = string.Empty;
-            if (message.StartsWith('@'))
+            if (message.Message.StartsWith('@'))
             {
-                var index = message.IndexOf(":");
-                receiver = message.Substring(0, index + 1).TrimStart('@').TrimEnd(':');
-                message = message.Substring(index + 1);
+                var index = message.Message.IndexOf(":");
+                receiver = message.Message.Substring(0, index + 1).TrimStart('@').TrimEnd(':');
+                message.Message = message.Message.Substring(index + 1);
             }
             else
                 receiver = _configuration["HostUser:Name"];
@@ -121,20 +117,52 @@ namespace NotifyMe.Services
             }
             receiverConnections.Add(currentConnection.ConnectionID);
 
-
             var readOnly = receiverConnections.AsReadOnly();
-            var messageContainer = CreateMessage(user, message, receiver);
-            await Clients.Clients(readOnly).SendAsync("ReceiveMessage", user, messageContainer);
+            var messageContainer = CreateMessage(message.Username, message.Message, receiver);
+            await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username, messageContainer);
         }
 
-        public async Task SendNotification(string message)
+        [Authorize]
+        public async Task SendNotification(NotificationMessage message)
         {
-            var messageContainer = CreateMessage(_configuration["HostUser:Name"], message);
-            await Clients.All.SendAsync("ReceiveNotification", messageContainer);
+            if (message != null)
+            {
+                message.Date = DateTimeOffset.Now;
+                var messageContainer = @"<div class='modal fade' id='centralModalInfo' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+<div class='modal-dialog modal-side modal-top-right' role='document'>
+    <div class='modal-content'>
+        <div class='modal-header'>
+            <p class='heading lead'>{0}</p>
+
+            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                <span aria-hidden='true' class='white-text'>&times;</span>
+            </button>
+        </div>
+
+        <div class='modal-body'>
+            <div class='text-center' id='notificationcontent'>
+                <i class='fa fa-check fa-4x mb-3 animated rotateIn'></i>
+                <p>{1}</p>
+            </div>
+        </div>
+        <div class='modal-footer justify-content-center'>
+            <a type='button' class='btn btn-primary' hrep='{2}'>Go<i class='fa fa-diamond ml-1'></i></a>
+            <a type='button' class='btn btn-outline-primary waves-effect' data-dismiss='modal'>Ok, thanks...</a>
+        </div>
+    </div>
+</div>
+</div>";
+
+                messageContainer = string.Format(messageContainer,
+                    message.Title,
+                    message.Message,
+                    message.Link);
+                await Clients.All.SendAsync("ReceiveNotification", messageContainer);
+            }
         }
 
 
-        private  string CreateMessage(string from, string message, string to = "")
+        private string CreateMessage(string from, string message, string to = "")
         {
             if (!string.IsNullOrEmpty(to))
             {
@@ -149,7 +177,8 @@ namespace NotifyMe.Services
                 {
                     Content = message,
                     Date = DateTime.Now,
-                    ToUser = to
+                    ToUser = to,
+                    FromUser = from
                 });
 
                 _db.Connections.Update(currentConnection);

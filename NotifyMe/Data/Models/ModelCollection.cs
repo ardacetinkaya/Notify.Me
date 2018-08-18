@@ -34,6 +34,8 @@ namespace NotifyMe.Data.Models
     {
         public long Id { get; set; }
         public string ToUser { get; set; }
+
+        public string FromUser { get; set; } 
         public string Content { get; set; }
         public DateTime Date { get; set; }
     }

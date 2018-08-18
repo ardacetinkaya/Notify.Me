@@ -1,0 +1,79 @@
+@page
+@model Notifications
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    ViewData["Title"] = "Notify.Me";
+}
+@section Scripts
+{
+    @if (SignInManager.IsSignedIn(User))
+    {
+
+        <script type="text/javascript" src="~/js/chat.js"></script>
+        <script>
+
+    
+
+    
+            
+            $(".arstatus").click(function () {
+               
+                $.ajax({
+                    url: '/',
+                    data: {
+                        status: $(this).data('status')
+                    }
+                })
+
+            });
+        </script>
+
+    }
+}
+<pre>
+  _   _           _     _    __             __  __        
+ | \ | |         | |   (_)  / _|           |  \/  |       
+ |  \| |   ___   | |_   _  | |_   _   _    | \  / |   ___ 
+ | . ` |  / _ \  | __| | | |  _| | | | |   | |\/| |  / _ \
+ | |\  | | (_) | | |_  | | | |   | |_| |   | |  | | |  __/
+ |_| \_|  \___/   \__| |_| |_|    \__, |   |_|  |_|  \___|
+                                   __/ |                  
+                                  |___/                   
+</pre>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading" id="notificationpanel">
+                    <span class="glyphicon glyphicon-comment"></span> Notification Messages
+                    <div class="btn-group pull-right">
+                        <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#notificationpanel" href="#collapsenotification">
+                            <span class="glyphicon glyphicon-chevron-down"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-collapse collapse in" id="collapsenotification">
+                    <div class="panel-body" id="notifications">
+                        <ul id="generalnotification" class="chat"></ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input type="hidden" value="You" id="txtnotificationuser" />
+                            <input id="txtnotification" maxlength="250" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                            <div>
+                                <input id="txttitle" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a title..." />
+                                <input id="txtlink" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a link if exists..." />
+                            </div>
+                            <span class="input-group-btn">
+                                <button class="btn btn-warning btn-sm" id="btnsendnotification">
+                                    Send
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="summernote"></div>
