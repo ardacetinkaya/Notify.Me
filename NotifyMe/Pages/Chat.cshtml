@@ -6,11 +6,12 @@
 }
 
 @section Scripts
-    {
+{
     @if (SignInManager.IsSignedIn(User))
     {
         <script type="text/javascript" src="~/js/chat.js"></script>
-        <script>
+        
+        <script>           
             $(".arstatus").click(function () {
                 $.ajax({
                     url: '/',
@@ -20,6 +21,7 @@
                 })
             });
         </script>
+
 
     }
 }

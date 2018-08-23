@@ -45,10 +45,9 @@ if (notificationAction !== null) {
     notificationAction.addEventListener("click", function (event) {
         var title = document.getElementById("txttitle").value;
         var link = document.getElementById("txtlink").value;
-        var message = document.getElementById("txtnotification").value;
-        document.getElementById("txtnotification").value = '';
         document.getElementById("txtlink").value = '';
         document.getElementById("txttitle").value = ''
+        var message=tinyMCE.activeEditor.getContent();
         var notification = {
             title: title,
             link: link,

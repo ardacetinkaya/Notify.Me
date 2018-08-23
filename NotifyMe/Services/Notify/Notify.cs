@@ -179,17 +179,22 @@ namespace NotifyMe.Services
             </div>
         </div>
         <div class='modal-footer justify-content-center'>
-            <a type='button' class='btn btn-primary' hrep='{2}'>Go<i class='fa fa-diamond ml-1'></i></a>
+            {2}
             <a type='button' class='btn btn-outline-primary waves-effect' data-dismiss='modal'>Ok, thanks...</a>
         </div>
     </div>
 </div>
 </div>";
 
+                var link = string.Empty;
+                if(!string.IsNullOrEmpty(message.Link))
+                {
+                    link=$"<a type='button' class='btn btn-primary' hrep='{message.Link}'>Go<i class='fa fa-diamond ml-1'></i></a>";
+                }
                 messageContainer = string.Format(messageContainer,
                     message.Title,
                     message.Message,
-                    message.Link);
+                    link);
                 var messageContent = JsonConvert.SerializeObject(message);
                 var notificationMessage = new Message()
                 {
