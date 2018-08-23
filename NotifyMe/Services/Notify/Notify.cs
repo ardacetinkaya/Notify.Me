@@ -71,7 +71,7 @@ namespace NotifyMe.Services
 
             await _db.SaveChangesAsync();
 
-
+            _logger.LogInformation($"{name} is connected");
             await Clients.Caller.SendAsync("GiveName", name);
             await base.OnConnectedAsync();
         }
