@@ -17,7 +17,6 @@ namespace NotifyMe.Pages
     {
 
         private readonly IHubContext<Notify> _hub;
-        private readonly Notify _notify;
 
         public string Message { get; private set; }
 

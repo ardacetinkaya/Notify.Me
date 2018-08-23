@@ -22,12 +22,6 @@ namespace NotifyMe.Pages
             _hub = hub;
         }
 
-        public async void OnGetAsync(string status="")
-        {
-   
-
-        }
-
        
     }
 }

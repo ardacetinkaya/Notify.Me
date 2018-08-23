@@ -331,5 +331,4 @@ ASALocalRun/
 
 *.pubxml
 NotifyMe/appsettings.Development.json
-
-NotifyMe/appsettings.Development.json
+NotifyMe/appsettings.json
