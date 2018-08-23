@@ -33,6 +33,11 @@ connection.on("ReceiveNotification", function (message) {
     }
 
 });
+$(document).ready(function () {
+    $('#messagesList').on('click','li',function(){
+        document.getElementById("txtmessage").value = '@'+$(this).find("strong").html()+': ';
+    })
+});
 
 var notificationAction = document.getElementById("btnsendnotification");
 if (notificationAction !== null) {
@@ -41,12 +46,12 @@ if (notificationAction !== null) {
         var link = document.getElementById("txtlink").value;
         var message = document.getElementById("txtnotification").value;
         document.getElementById("txtnotification").value = '';
-        document.getElementById("txtlink").value='';
-        document.getElementById("txttitle").value=''
+        document.getElementById("txtlink").value = '';
+        document.getElementById("txttitle").value = ''
         var notification = {
             title: title,
             link: link,
-            message:message
+            message: message
         }
         var elem = document.getElementById('generalnotification');
         elem.scrollTop += 1000;
@@ -72,7 +77,7 @@ if (messageAction !== null) {
         elem.scrollTop += 1000;
         var privateMessage = {
             username: user,
-            message:messageText
+            message: messageText
         }
 
         connection.invoke("SendPrivateMessage", privateMessage).catch(function (err) {

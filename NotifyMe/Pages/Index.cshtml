@@ -6,25 +6,8 @@
 }
 
 @section Scripts
-    {
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <script type="text/javascript" src="~/js/chat.js"></script>
-        <script>
+{
 
-            $(".arstatus").click(function () {
-               
-                $.ajax({
-                    url: '/',
-                    data: {
-                        status: $(this).data('status')
-                    }
-                })
-
-            });
-        </script>
-
-    }
 }
 
 <pre>
@@ -38,52 +21,4 @@
                                   |___/                   
 </pre>
 
-@if (SignInManager.IsSignedIn(User))
-{
-
-    <h2>Hi</h2>
-    <h3>Are you ready to talk with your visitors? Let's go... :)</h3>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div style="margin:5px 5px">
-                        <button class="btn btn-success arstatus" data-status="Online" id="btnonline">Online</button>
-                        <button class="btn btn-danger arstatus" data-status="Busy" id="btnbusy">Busy</button>
-                        <button class="btn btn-warning arstatus" data-status="Away" id="btnaway">Away</button>
-                    </div>
-                    <div class="panel-heading" id="accordion">
-                        <span class="glyphicon glyphicon-comment"></span> Chat
-                        <div class="btn-group pull-right">
-                            <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                <span class="glyphicon glyphicon-chevron-down"></span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="panel-collapse collapse in" id="collapseOne">
-                        <div class="panel-body" id="chatcontent">
-                            <ul id="messagesList" class="chat"></ul>
-                        </div>
-                        <div class="panel-footer">
-                            <div class="input-group">
-                                <input type="hidden" value="You" id="txtuser" />
-                                <input id="txtmessage" maxlength="250" type="text" class="form-control input-sm" placeholder="Type your message here..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-warning btn-sm" id="btnsendmessage">
-                                        Send
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-}
-else
-{
-    
-}
-
+<div>There are about <strong>@Model.Message </strong>connected user(s). </div>

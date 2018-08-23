@@ -91,6 +91,13 @@ namespace NotifyMe.Services
             await base.OnDisconnectedAsync(exception);
         }
 
+        public int GetConnected()
+        {
+            var result = _db.Connections.Where(s=>s.Connected).ToList().Count;
+
+            return result;
+        }
+
         public async Task SendPrivateMessage(ChatMessage message)
         {
             var receiver = string.Empty;
@@ -191,6 +198,7 @@ namespace NotifyMe.Services
             if (from == _configuration["HostUser:Name"])
             {
                 image = _configuration["HostUser:Image"];
+                from = $"{from}->{to}";
             }
 
             var messageContainer = "<span class=\"chat-img pull-left\">"
