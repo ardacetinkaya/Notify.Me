@@ -20,9 +20,9 @@ namespace NotifyMe.Services
         private readonly IConfiguration _configuration;
         private NotifyDbContext _db;
 
-        private readonly ILogger _logger;
+        private readonly ILogger<Notify> _logger;
 
-        public Notify(IServiceProvider provider, IConfiguration configuration, ILogger logger)
+        public Notify(IServiceProvider provider, IConfiguration configuration, ILogger<Notify> logger)
         {
             _serviceProvider = provider;
             _configuration = configuration;
