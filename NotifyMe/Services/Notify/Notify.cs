@@ -22,11 +22,17 @@ namespace NotifyMe.Services
 
         private readonly ILogger<Notify> _logger;
 
-        public Notify(IServiceProvider provider, IConfiguration configuration, ILogger<Notify> logger)
+        public Notify(IServiceProvider provider, IConfiguration configuration, ILogger<Notify> logger) : this(provider, configuration)
+        {
+
+            _logger = logger;
+
+        }
+
+        public Notify(IServiceProvider provider, IConfiguration configuration)
         {
             _serviceProvider = provider;
             _configuration = configuration;
-            _logger = logger;
             _db = (NotifyDbContext)_serviceProvider.GetService(typeof(NotifyDbContext));
         }
 
@@ -187,9 +193,9 @@ namespace NotifyMe.Services
 </div>";
 
                 var link = string.Empty;
-                if(!string.IsNullOrEmpty(message.Link))
+                if (!string.IsNullOrEmpty(message.Link))
                 {
-                    link=$"<a type='button' class='btn btn-primary' hrep='{message.Link}'>Go<i class='fa fa-diamond ml-1'></i></a>";
+                    link = $"<a type='button' class='btn btn-primary' hrep='{message.Link}'>Go<i class='fa fa-diamond ml-1'></i></a>";
                 }
                 messageContainer = string.Format(messageContainer,
                     message.Title,

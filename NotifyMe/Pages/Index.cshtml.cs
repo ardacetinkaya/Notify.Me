@@ -17,19 +17,20 @@ namespace NotifyMe.Pages
     {
 
         private readonly IHubContext<Notify> _hub;
+        private readonly Notify _notify;
 
         public string Message { get; private set; }
 
         public IndexModel(IHubContext<Notify> hub,IServiceProvider provider, IConfiguration configuration)
         {
             _hub = hub;
-            //_notify = new Notify(provider,configuration);
+            _notify = new Notify(provider,configuration);
         }
 
         public async void OnGetAsync(string status="")
         {
             
-            //Message = _notify.GetConnected().ToString();
+            Message = _notify.GetConnected().ToString();
             if (!string.IsNullOrEmpty(status))
             {
                 var userName = User.Identity.Name;
