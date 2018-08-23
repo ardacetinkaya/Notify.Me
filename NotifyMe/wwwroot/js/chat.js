@@ -34,8 +34,9 @@ connection.on("ReceiveNotification", function (message) {
 
 });
 $(document).ready(function () {
-    $('#messagesList').on('click','li',function(){
-        document.getElementById("txtmessage").value = '@'+$(this).find("strong").html()+': ';
+    $('#messagesList').on('click', 'li', function () {
+        document.getElementById("txtmessage").value = '@' + $(this).find("strong").html() + ': ';
+        $("#txtmessage").focus();
     })
 });
 
@@ -79,10 +80,11 @@ if (messageAction !== null) {
             username: user,
             message: messageText
         }
-
-        connection.invoke("SendPrivateMessage", privateMessage).catch(function (err) {
-            return console.error;
-        });
+        if (messageText) {
+            connection.invoke("SendPrivateMessage", privateMessage).catch(function (err) {
+                return console.error;
+            });
+        }
         event.preventDefault();
     });
 }

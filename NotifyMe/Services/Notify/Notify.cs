@@ -93,13 +93,15 @@ namespace NotifyMe.Services
 
         public int GetConnected()
         {
-            var result = _db.Connections.Where(s=>s.Connected).ToList().Count;
+            var result = 1;//_db.Connections.Where(s => s.Connected).ToList().Count;
 
             return result;
         }
 
         public async Task SendPrivateMessage(ChatMessage message)
         {
+            if(string.IsNullOrEmpty(message.Message)) return;
+            
             var receiver = string.Empty;
             if (message.Message.StartsWith('@'))
             {
@@ -126,7 +128,21 @@ namespace NotifyMe.Services
 
             var readOnly = receiverConnections.AsReadOnly();
             var messageContainer = CreateMessage(message.Username, message.Message, receiver);
-            await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username, messageContainer);
+
+            if (!string.IsNullOrEmpty(receiver))
+            {
+                var result = SaveMessage(new Message()
+                {
+                    Content = message.Message,
+                    RawContent = JsonConvert.SerializeObject(message),
+                    ToUser = receiver,
+                    FromUser = message.Username,
+                    Date = DateTime.Now,
+                    Type = MessageType.Chat.ToString()
+                });
+                if (result)
+                    await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username, messageContainer);
+            }
         }
 
         [Authorize]
@@ -164,33 +180,50 @@ namespace NotifyMe.Services
                     message.Title,
                     message.Message,
                     message.Link);
-                await Clients.All.SendAsync("ReceiveNotification", messageContainer);
+                var messageContent = JsonConvert.SerializeObject(message);
+                var notificationMessage = new Message()
+                {
+                    Content = message.Message,
+                    RawContent = messageContent,
+                    ToUser = "Everyone",
+                    FromUser = _configuration["HostUser:Name"],
+                    Date = DateTime.Now,
+                    Type = MessageType.Notification.ToString()
+
+                };
+                if (SaveMessage(notificationMessage))
+                    await Clients.All.SendAsync("ReceiveNotification", messageContainer);
             }
         }
 
+        private bool SaveMessage(Message message)
+        {
+            try
+            {
+                var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId && c.Connected).FirstOrDefault();
+                if (currentConnection != null)
+                {
+                    if (currentConnection.Messages == null) currentConnection.Messages = new List<Message>();
+
+                    message.Date = DateTime.Now;
+                    currentConnection.Messages.Add(message);
+
+                    _db.Connections.Update(currentConnection);
+                    _db.SaveChanges();
+                    return true;
+                }
+
+            }
+            catch (System.Exception)
+            {
+
+            }
+            return false;
+        }
 
         private string CreateMessage(string from, string message, string to = "")
         {
-            if (!string.IsNullOrEmpty(to))
-            {
-                var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId && c.Connected).First();
 
-                if (currentConnection.Messages == null)
-                {
-                    currentConnection.Messages = new List<Message>();
-
-                }
-                currentConnection.Messages.Add(new Message()
-                {
-                    Content = message,
-                    Date = DateTime.Now,
-                    ToUser = to,
-                    FromUser = from
-                });
-
-                _db.Connections.Update(currentConnection);
-                _db.SaveChanges();
-            }
 
             var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
 

@@ -11,16 +11,13 @@
     {
         <script type="text/javascript" src="~/js/chat.js"></script>
         <script>
-
             $(".arstatus").click(function () {
-               
                 $.ajax({
                     url: '/',
                     data: {
                         status: $(this).data('status')
                     }
                 })
-
             });
         </script>
 
