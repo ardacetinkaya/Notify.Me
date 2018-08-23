@@ -33,6 +33,7 @@ namespace NotifyMe
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.AddLogging();
 
             services.AddDbContext<NotifyDbContext>(options =>
                 options.UseSqlServer(
@@ -42,8 +43,7 @@ namespace NotifyMe
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication().AddTwitter(twitterOptions =>
             {
@@ -64,7 +64,8 @@ namespace NotifyMe
 
             services.AddSignalR(con =>
             {
-                
+                con.KeepAliveInterval = TimeSpan.FromMinutes(1);
+                con.EnableDetailedErrors= true;
             });
         }
 

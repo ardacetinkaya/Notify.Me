@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NotifyMe.Data;
 using NotifyMe.Data.Models;
@@ -19,10 +20,13 @@ namespace NotifyMe.Services
         private readonly IConfiguration _configuration;
         private NotifyDbContext _db;
 
-        public Notify(IServiceProvider provider, IConfiguration configuration)
+        private readonly ILogger _logger;
+
+        public Notify(IServiceProvider provider, IConfiguration configuration, ILogger logger)
         {
             _serviceProvider = provider;
             _configuration = configuration;
+            _logger = logger;
             _db = (NotifyDbContext)_serviceProvider.GetService(typeof(NotifyDbContext));
         }
 
@@ -30,7 +34,6 @@ namespace NotifyMe.Services
         public override async Task OnConnectedAsync()
         {
             var name = Context.User.Identity.Name;
-
 
             if (string.IsNullOrEmpty(name))
             {
@@ -77,8 +80,6 @@ namespace NotifyMe.Services
         {
 
             var connection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
-
-
             if (connection != null)
             {
                 connection.Connected = false;
@@ -93,15 +94,24 @@ namespace NotifyMe.Services
 
         public int GetConnected()
         {
-            var result = 1;//_db.Connections.Where(s => s.Connected).ToList().Count;
+            try
+            {
+                var result = _db.Connections.Where(s => s.Connected).ToList().Count;
 
-            return result;
+                return result;
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return -1;
+            }
+
         }
 
         public async Task SendPrivateMessage(ChatMessage message)
         {
-            if(string.IsNullOrEmpty(message.Message)) return;
-            
+            if (string.IsNullOrEmpty(message.Message)) return;
+
             var receiver = string.Empty;
             if (message.Message.StartsWith('@'))
             {
@@ -192,7 +202,10 @@ namespace NotifyMe.Services
 
                 };
                 if (SaveMessage(notificationMessage))
+                {
                     await Clients.All.SendAsync("ReceiveNotification", messageContainer);
+                    _logger.LogInformation($"Notification message {message.Title} is sent.");
+                }
             }
         }
 
@@ -214,19 +227,16 @@ namespace NotifyMe.Services
                 }
 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-
+                _logger.LogError(ex, ex.Message);
             }
             return false;
         }
 
         private string CreateMessage(string from, string message, string to = "")
         {
-
-
             var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
-
 
             if (from == _configuration["HostUser:Name"])
             {
