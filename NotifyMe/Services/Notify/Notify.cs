@@ -22,20 +22,14 @@ namespace NotifyMe.Services
 
         private readonly ILogger<Notify> _logger;
 
-        public Notify(IServiceProvider provider, IConfiguration configuration, ILogger<Notify> logger) : this(provider, configuration)
-        {
-
-            _logger = logger;
-
-        }
-
-        public Notify(IServiceProvider provider, IConfiguration configuration)
+        public Notify(IServiceProvider provider, IConfiguration configuration, ILogger<Notify> logger)
         {
             _serviceProvider = provider;
             _configuration = configuration;
             _db = (NotifyDbContext)_serviceProvider.GetService(typeof(NotifyDbContext));
-        }
+            _logger = logger;
 
+        }
 
         public override async Task OnConnectedAsync()
         {
