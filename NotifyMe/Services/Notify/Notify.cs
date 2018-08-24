@@ -34,6 +34,10 @@ namespace NotifyMe.Services
         public override async Task OnConnectedAsync()
         {
             var name = Context.User.Identity.Name;
+
+            var response = Context.GetHttpContext().Response;
+            var url = response.Headers["Access-Control-Allow-Origin"];
+
             if (string.IsNullOrEmpty(name))
             {
                 lock (_syncLock)
@@ -61,7 +65,7 @@ namespace NotifyMe.Services
             }
 
             user.Connections = new List<Connection>();
-            user.Connections.Add(new Connection() { ConnectionID = connectionId, Connected = true, ConnectionDate = DateTime.Now });
+            user.Connections.Add(new Connection() { ConnectionID = connectionId,UserAgent=url, Connected = true, ConnectionDate = DateTime.Now });
 
             if (isNew)
                 _db.Users.Add(user);
