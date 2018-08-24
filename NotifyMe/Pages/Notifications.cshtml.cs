@@ -19,10 +19,17 @@ namespace NotifyMe.Pages
 
         private readonly IHubContext<Notify> _hub;
         private NotifyDbContext _db;
+        public string ActiveVisitorCount { get; private set; }
         public Notifications(IHubContext<Notify> hub, IServiceProvider serviceProvider)
         {
             _hub = hub;
             _db = (NotifyDbContext)serviceProvider.GetService(typeof(NotifyDbContext));
+        }
+
+        public void OnGet()
+        {
+           ActiveVisitorCount = _db.Connections.Where(c=>c.Connected).Count().ToString();
+
         }
 
         public async Task<JsonResult> OnGetAllNotificationsAsync(int draw, int start, int length)

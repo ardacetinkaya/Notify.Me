@@ -4,7 +4,9 @@ body {
 }
 
 /* Wrapping element */
+
 /* Set some basic padding to keep content from hitting the edges */
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
@@ -15,6 +17,7 @@ body {
 }
 
 /* Hide/rearrange for smaller screens */
+
 @media screen and (max-width: 767px) {
     /* Hide captions */
     .carousel-caption {
@@ -29,13 +32,13 @@ body {
 }
 
 .chat-img {
-    width:40px;
-    margin-right:15px;
+    width: 40px;
+    margin-right: 15px;
 }
 
-    .chat-img .img-circle {
-        width:100%;
-    }
+.chat-img .img-circle {
+    width: 100%;
+}
 
 .chat li {
     margin-bottom: 10px;
@@ -43,22 +46,22 @@ body {
     border-bottom: 1px dotted #B3A9A9;
 }
 
-    .chat li.left .chat-body {
-        margin-left: 60px;
-    }
+.chat li.left .chat-body {
+    margin-left: 60px;
+}
 
-    .chat li.right .chat-body {
-        margin-right: 60px;
-    }
+.chat li.right .chat-body {
+    margin-right: 60px;
+}
 
+.chat li .chat-body p {
+    margin: 0;
+    color: #777777;
+    word-wrap: break-word;
+}
 
-    .chat li .chat-body p {
-        margin: 0;
-        color: #777777;
-        word-wrap: break-word;
-    }
-
-.panel .slidedown .glyphicon, .chat .glyphicon {
+.panel .slidedown .glyphicon,
+.chat .glyphicon {
     margin-right: 5px;
 }
 
@@ -68,7 +71,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #F5F5F5;
 }
 
@@ -78,11 +81,14 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #555;
 }
-.notificationdata td
-{
-    word-break:break-all;
 
+.notificationdata {
+    width: 100%;
+}
+
+.notificationdata td {
+    word-break: break-all;
 }

@@ -14,7 +14,14 @@
         <script type="text/javascript" src="~/js/notification.js"></script>
     }
 }
+
 <div class="container">
+    <pre>
+        You can instantly send notifications to your web page to display custom messages to your real-time visitors.
+        So you can make an interaction with visitors. 
+
+        There are about <strong>@Model.ActiveVisitorCount </strong>connected user(s).
+    </pre>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -43,13 +50,12 @@
                     <div class="panel-footer">
                         <div>
                             <input type="hidden" value="You" id="txtnotificationuser" />
-                     
                             <input id="txttitle" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a title..." />
                             <input id="txtlink" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a link if exists..." />
                             <textarea id="txtnotification"></textarea>
-                                
-                            <button class="btn btn-warning btn-sm pull-right" id="btnsendnotification">Send</button>
-                       
+                            <div class="text-right p-t-8" >
+                                <button class="btn btn-warning btn-sm" id="btnsendnotification">Send</button>
+                            </div>
                         </div>
                     </div>
                 </div>
