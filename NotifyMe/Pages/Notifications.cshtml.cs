@@ -32,7 +32,7 @@ namespace NotifyMe.Pages
 
         }
 
-        public async Task<JsonResult> OnGetAllNotificationsAsync(int draw, int start, int length)
+        public  JsonResult OnGetAllNotificationsAsync(int draw, int start, int length)
         {
             var notifications = _db.Message.Where(m => m.Type == MessageType.Notification.ToString())
                                         .OrderByDescending(o=>o.Date)

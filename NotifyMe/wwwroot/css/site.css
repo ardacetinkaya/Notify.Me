@@ -92,3 +92,18 @@ body {
 .notificationdata td {
     word-break: break-all;
 }
+
+#activeusers {
+    margin: 10px;
+}
+
+#activeusers .radius {
+    margin: 10px;
+    border-radius: 50%;
+    background: #fff;
+    width: 30px;
+    height: 30px;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}

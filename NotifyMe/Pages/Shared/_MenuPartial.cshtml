@@ -13,6 +13,7 @@
 }
         <li><a asp-page="/Demo">Demo</a></li>
     </ul>
-    <partial name="_LoginPartial" />
+    @await Html.PartialAsync("_LoginPartial")
+    
 </div>
 
