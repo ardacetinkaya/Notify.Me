@@ -67,6 +67,8 @@ namespace NotifyMe
             {
                 con.KeepAliveInterval = TimeSpan.FromMinutes(5);
                 con.EnableDetailedErrors = true;
+                con.HandshakeTimeout=TimeSpan.FromMinutes(5);
+                
             });
         }
 

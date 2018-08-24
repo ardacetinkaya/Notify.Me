@@ -1,6 +1,7 @@
 ﻿"use strict";
 var connection = new signalR.HubConnection("/Ntfctn", {
-    logger: signalR.LogLevel.Information
+    logger: signalR.LogLevel.Information,
+    serverTimeoutInMilliseconds=300000
 });
 
 connection.on("ReceiveMessage", function (user, message) {
