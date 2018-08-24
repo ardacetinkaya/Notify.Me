@@ -1,8 +1,10 @@
 ﻿"use strict";
-var connection = new signalR.HubConnection("/Ntfctn", {
-    logger: signalR.LogLevel.Information,
-    serverTimeoutInMilliseconds:300000
-});
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/Ntfctn")
+    .configureLogging(signalR.LogLevel.Information)
+    .build();
+connection.serverTimeoutInMilliseconds=300000;
+
 
 connection.on("ReceiveMessage", function (user, message) {
     var li = document.createElement("li");
@@ -73,6 +75,4 @@ if (messageInput !== null) {
         }
     });
 }
-connection.start().catch(function (err) {
-    return console.error;
-});
+connection.start().catch(err => console.error(err));
