@@ -79,16 +79,7 @@ label {
   z-index: 1;
 }
 
-.login100-more::before {
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
+
 
 .login100-form {
   width: 560px;
@@ -291,7 +282,7 @@ input.input100 {
   width: 100%;
   height: 50px;
   border-radius: 10px;
-  background: #6675df;
+ 
 
   font-size: 12px;
   color: #fff;
@@ -304,12 +295,6 @@ input.input100 {
   -moz-transition: all 0.4s;
   transition: all 0.4s;
 }
-
-.login100-form-btn:hover {
-  background: #333333;
-}
-
-
 
 @media (max-width: 992px) {
   .login100-form {
@@ -341,85 +326,7 @@ input.input100 {
   }
 }
 
-
-/*------------------------------------------------------------------
-[ Alert validate ]*/
-
 .validate-input {
   position: relative;
 }
 
-.alert-validate::before {
-  content: attr(data-validate);
-  position: absolute;
-  z-index: 100;
-  max-width: 70%;
-  background-color: #fff;
-  border: 1px solid #c80000;
-  border-radius: 2px;
-  padding: 4px 25px 4px 10px;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-  transform: translateY(-50%);
-  right: 12px;
-  pointer-events: none;
-
-  color: #c80000;
-  font-size: 13px;
-  line-height: 1.4;
-  text-align: left;
-
-  visibility: hidden;
-  opacity: 0;
-
-  -webkit-transition: opacity 0.4s;
-  -o-transition: opacity 0.4s;
-  -moz-transition: opacity 0.4s;
-  transition: opacity 0.4s;
-}
-
-.alert-validate::after {
-  content: "\f12a";
-  font-family: FontAwesome;
-  display: block;
-  position: absolute;
-  z-index: 110;
-  color: #c80000;
-  font-size: 16px;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-  transform: translateY(-50%);
-  right: 18px;
-}
-
-.alert-validate:hover:before {
-  visibility: visible;
-  opacity: 1;
-}
-
-@media (max-width: 992px) {
-  .alert-validate::before {
-    visibility: visible;
-    opacity: 1;
-  }
-}
-
-
-.login100-form-social-item {
-  width: 36px;
-  height: 36px;
-  font-size: 18px;
-  color: #fff;
-  border-radius: 50%;
-}
-
-.login100-form-social-item:hover {
-  background: #333333;
-  color: #fff;
-}

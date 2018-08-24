@@ -4,19 +4,17 @@
 @{
     ViewData["Title"] = "Log in";
 }
+
 <link rel="stylesheet" type="text/css" href="~/css/util.css">
 <link rel="stylesheet" type="text/css" href="~/css/main.css">
 
-<div class="limiter">
+<div class="limiter" style="margin-top:-55px">
     <div class="container-login100">
         <div class="wrap-login100">
-
-   
             <section>
                 <form class="login100-form validate-form" method="POST">
                     <span class="login100-form-title p-b-43">
                         Login to continue
-                        
                     </span>
                    <div class="p-b-20">
                         <div asp-validation-summary="All" class="text-danger"></div>
@@ -37,17 +35,14 @@
 
                     <div class="flex-sb-m w-full p-t-3 p-b-32">
                         <div class="contact100-form-checkbox">
-                            <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
-                            <label class="label-checkbox100" for="ckb1">
-                                Remember me
-                            </label>
+                            
                         </div>
 
                         <div>
-                            <p>
+                            <p class="fs-12">
                                 <a asp-page="./ForgotPassword">Forgot your password?</a>
                             </p>
-                            <p>
+                            <p class="fs-12">
                                 <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
                             </p>
                         </div>
@@ -55,26 +50,42 @@
             
 
                     <div class="container-login100-form-btn">
-                        <button type="submit" class="login100-form-btn">Login</button>
+                        <button type="submit" class="btn btn-info btn-sm login100-form-btn">Login</button>
                     </div>
                     
                     
                 </form>   
             </section>
-        
-        
-            
-            <div class="login100-more" style="background-image: url('/images/MiyopRobot.jpg');">
-            
+            <div class="login100-more p-t-150 p-r-40 p-l-40" style="background-image: url('/images/Login.jpg');">
+                <div class="panel panel-primary ">
+                    <div class="panel-heading" id="accordion">
+                        <span class="glyphicon glyphicon-comment"></span> Chat
+                        <div class="btn-group pull-right">
+                            <span id="onlinehost"></span>
+                        </div>
+                    </div>
+                    <div class="panel-collapse collapse in" id="collapseOne">
+                        <div class="panel-body" id="chatcontent">
+                            <ul id="messagesList" class="chat"></ul>
+                        </div>
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <input type="hidden" value="visitor" id="txtuser" />
+                                <input id="txtmessage" maxlength="250" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-info btn-sm" id="btnsendmessage">
+                                        Send
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
     </div>
 </div>
-
-
-
-
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript" src="~/js/chat.js"></script>
 }

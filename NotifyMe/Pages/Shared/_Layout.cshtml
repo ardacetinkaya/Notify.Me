@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -21,6 +24,8 @@
   
 </head>
 <body>
+@if (SignInManager.IsSignedIn(User))
+{
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -36,15 +41,19 @@
  
         </div>
     </nav>
+}
 
     <partial name="_CookieConsentPartial" />
 
-    <div class="container body-content">
+    <div class="container body-content p-t-55">
         @RenderBody()
+@if (SignInManager.IsSignedIn(User))
+{
         <hr />
         <footer>
             <p>&copy; 2018 - NotifyMe</p>
         </footer>
+}
     </div>
 
     <environment include="Development">
