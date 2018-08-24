@@ -40,32 +40,7 @@ $(document).ready(function () {
     })
 });
 
-var notificationAction = document.getElementById("btnsendnotification");
-if (notificationAction !== null) {
-    notificationAction.addEventListener("click", function (event) {
-        var title = document.getElementById("txttitle").value;
-        var link = document.getElementById("txtlink").value;
-        document.getElementById("txtlink").value = '';
-        document.getElementById("txttitle").value = ''
-        var message=tinyMCE.activeEditor.getContent();
-        var notification = {
-            title: title,
-            link: link,
-            message: message
-        }
-        var elem = document.getElementById('generalnotification');
-        elem.scrollTop += 1000;
-        var li = document.createElement("li");
-        li.classList.add("left");
-        li.classList.add("clearfix");
-        li.innerHTML = message;
-        elem.appendChild(li);
-        connection.invoke("SendNotification", notification).catch(function (err) {
-            return console.error;
-        });
-        event.preventDefault();
-    });
-}
+
 
 var messageAction = document.getElementById("btnsendmessage");
 if (messageAction !== null) {

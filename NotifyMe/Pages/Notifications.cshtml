@@ -11,39 +11,7 @@
 
         <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=g4q2s6u0msl84m6htaw4ztm3by25re9sn4eiv07m907wbu6o"></script>
         <script type="text/javascript" src="~/js/chat.js"></script>
-        <script>
-            $(document).ready( function () {
-                tinymce.init({ selector:'textarea' });
-                $('#notificationdata').DataTable({
-                    "processing": true,
-                    "serverSide": true,
-                    "searching":false,
-                    "ordering":false,
-                    "info":false,
-                    "lengthChange": false,
-                    "ajax":{
-                        url: "/Notifications?handler=AllNotifications",
-                        type:"GET"
-                    },
-                    "columns": [
-                        { 
-                            data: 'content',
-                            render: function ( data, type, row ) {
-                                return data;
-                                 }},
-                        { 
-                            data: 'date',
-                            render: function ( data, type, row ) {
-                                return data;
-                                 }},
-                        {
-                            data: 'id' 
-                            }
-                    ]
-                });
-            });
-        </script>
-
+        <script type="text/javascript" src="~/js/notification.js"></script>
     }
 }
 <div class="container">
