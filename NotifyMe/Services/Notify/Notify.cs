@@ -34,7 +34,6 @@ namespace NotifyMe.Services
         public override async Task OnConnectedAsync()
         {
             var name = Context.User.Identity.Name;
-
             if (string.IsNullOrEmpty(name))
             {
                 lock (_syncLock)

@@ -7,7 +7,7 @@
 {
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
-            <li id="activeusers"><p class="radius">@VisitorService.GetActiveVisitorCount()</p></li>
+            <li id="activeusers"><p class="radius"><a title="Active users count" asp-page="/Users">@VisitorService.GetActiveVisitorCount()</a></p></li>
             <li>
                 <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             </li>

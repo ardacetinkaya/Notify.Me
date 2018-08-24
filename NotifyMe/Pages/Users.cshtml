@@ -1,0 +1,52 @@
+@page
+@model Users
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    ViewData["Title"] = "Users";
+}
+@section Scripts
+{
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <script type="text/javascript" src="~/js/users.js"></script>
+    }
+}
+<div class="container">
+    <pre>
+ 
+    </pre>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> Users
+                    <div class="btn-group pull-right">
+                       
+                    </div>
+                </div>
+                <div class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <table id="usersdata" class="table table-striped table-bordered compact usersdata">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Date</th>
+                                    <th>Is Connected</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <tr><td></td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                        <ul id="generalnotification" class="chat"></ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div>
+              
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
