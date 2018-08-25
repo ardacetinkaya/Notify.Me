@@ -54,23 +54,18 @@ namespace NotifyMe.Services
             }
             string connectionId = Context.ConnectionId ?? Guid.NewGuid().ToString();
 
-
             var user = _db.Users.Where(u => u.UserName == name).FirstOrDefault();
 
-            bool isNew = false;
-            if (user == null)
+            var connection = new Connection()
             {
-                isNew = true;
-                user = new User() { UserName = name };
-            }
+                ConnectionID = connectionId,
+                UserAgent = url,
+                Connected = true,
+                ConnectionDate = DateTime.Now,
+                User = user ?? new User() { UserName = name }
+            };
 
-            user.Connections = new List<Connection>();
-            user.Connections.Add(new Connection() { ConnectionID = connectionId,UserAgent=url, Connected = true, ConnectionDate = DateTime.Now });
-
-            if (isNew)
-                _db.Users.Add(user);
-            else
-                _db.Users.Update(user);
+            _db.Connections.Add(connection);
 
             await _db.SaveChangesAsync();
 

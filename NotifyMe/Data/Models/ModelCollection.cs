@@ -13,7 +13,7 @@ namespace NotifyMe.Data.Models
         public long Id { get; set; }
         [MaxLength(100)]
         public string UserName { get; set; }
-        public ICollection<Connection> Connections { get; set; }
+
 
     }
 
