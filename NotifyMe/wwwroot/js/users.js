@@ -21,23 +21,27 @@ function BindUsers() {
         "columns": [{
                 data: 'user.userName',
                 render: function (data, type, row) {
-                    return data;
+                    return '<span class="glyphicon glyphicon-user"></span> '+data;
                 }
             },
             {
                 data: 'connectionDate',
                 render: function (data, type, row) {
-                    return data;
+                    return dateFormat(data, "dddd, mmmm dS, yyyy @ HH:MM:ss",true);
                 }
             },
             {
                 data: 'disconnectionDate',
                 render: function (data, type, row) {
-                    return data;
+                    return dateFormat(data, "dddd, mmmm dS, yyyy @ HH:MM:ss",true);
                 }
             },
             {
-                data: 'connected'
+                data: 'connected',
+                render: function (data, type, row) {
+                    return data?'<span class="glyphicon glyphicon-ok-circle" style="color:green"></span>':'<span class="glyphicon glyphicon-remove-circle"></span>';
+                }
+                
             },
             {
                 data: 'userAgent'
