@@ -25,6 +25,7 @@ namespace NotifyMe.Pages
 
         public  JsonResult OnGetUsersAsync(int draw, int start, int length)
         {
+            var totalCount = _db.Connections.Count();
             var connections = _db.Connections.Include(i=>i.User)
                                         
                                         .OrderByDescending(o=>o.ConnectionDate)
@@ -35,8 +36,8 @@ namespace NotifyMe.Pages
             {
                 Data = connections,
                 Draw=draw,
-                RecordsTotal = connections.Count+10,
-                RecordsFiltered = connections.Count+10,
+                RecordsTotal = totalCount,
+                RecordsFiltered = totalCount,
             };
             
             return new JsonResult(response);
