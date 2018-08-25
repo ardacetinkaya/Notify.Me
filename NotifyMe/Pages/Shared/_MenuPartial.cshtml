@@ -5,11 +5,11 @@
 
 <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-        <li><a asp-page="/Index">Home</a></li>
+        <li><a asp-page="/Index"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 @if (SignInManager.IsSignedIn(User))
 {
-        <li><a asp-page="/Notifications">Notify</a></li>
-        <li><a asp-page="/Chat">Chat</a></li>
+        <li><a asp-page="/Notifications"><span class="glyphicon glyphicon-bullhorn"></span> Notify</a></li>
+        <li><a asp-page="/Chat"><span class="glyphicon glyphicon-comment"></span> Chat</a></li>
 }
  
     </ul>
