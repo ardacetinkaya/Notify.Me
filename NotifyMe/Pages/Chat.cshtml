@@ -1,5 +1,6 @@
 @page
 @model Chat
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = "Chat";
@@ -32,7 +33,32 @@
             Are you ready to talk with your visitors?            
         </pre>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-2">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" id="accordion">
+                        <span class="glyphicon glyphicon-user"></span> Users
+                        <div class="btn-group pull-right">
+                            
+                        </div>
+                    </div>
+                    <div class="panel-collapse collapse in">
+                        <div class="panel-body" style="height: 100%;" >
+                            <ul id="userslist" class="chat" >
+                            @if(Model.Users!=null){
+                               @foreach (var user in Model.Users)
+                                {
+                                    <li ><a asp-page="/Chat" asp-page-handler='UserChat' asp-route-userId="@user.Id">@user.UserName</a></li>
+                                }
+                            }
+                            </ul>
+                        </div>
+                        <div class="panel-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
                 <div class="panel panel-primary">
                     <div style="margin:5px 5px">
                         <button class="btn btn-success arstatus" data-status="Online" id="btnonline">Online</button>
@@ -49,7 +75,15 @@
                     </div>
                     <div class="panel-collapse collapse in" id="collapseOne">
                         <div class="panel-body" id="chatcontent">
-                            <ul id="messagesList" class="chat"></ul>
+                            <ul id="messagesList" class="chat">
+                                @if(Model.Messages!=null)
+                                {
+                                    @foreach (var message in Model.Messages)
+                                    {
+                                        <li>@message.Content</li>
+                                    }
+                                }
+                            </ul>
                         </div>
                         <div class="panel-footer">
                             <div class="input-group">

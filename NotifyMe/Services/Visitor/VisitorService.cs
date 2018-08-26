@@ -24,10 +24,17 @@ namespace NotifyMe.Services
 
         public int GetTotalVisitorCount() => _db.Connections.Count();
 
+        public List<User> GetUsers()
+        {
+            var users = _db.Users.ToList();
+
+            return users;
+        }
+
         public List<NotifyMe.Data.Models.Connection> GetVisitors(int start, int length = 10)
         {
             var connections = _db.Connections.Include(i => i.User)
-                                    .OrderByDescending(o => o.Connected).ThenByDescending(d=>d.ConnectionDate)
+                                    .OrderByDescending(o => o.Connected).ThenByDescending(d => d.ConnectionDate)
                                     .Skip(start)
                                     .Take(length).ToList();
 
@@ -35,7 +42,7 @@ namespace NotifyMe.Services
 
         }
 
-        public  void LetInVisitor(string connectionId, string name = "", string url = "")
+        public void LetInVisitor(string connectionId, string name = "", string url = "")
         {
             var user = _db.Users.Where(u => u.UserName == name).FirstOrDefault();
 
@@ -50,11 +57,11 @@ namespace NotifyMe.Services
 
             _db.Connections.Add(connection);
 
-             _db.SaveChanges();
+            _db.SaveChanges();
 
         }
 
-        public  void LetOutVisitor(string connectionId)
+        public void LetOutVisitor(string connectionId)
         {
             if (!string.IsNullOrEmpty(connectionId))
             {
@@ -68,6 +75,11 @@ namespace NotifyMe.Services
 
                 }
             }
+        }
+
+        public List<Message> GetUserMessages(long userId)
+        {
+             return new List<Message>();
         }
     }
 }

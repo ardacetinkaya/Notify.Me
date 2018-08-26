@@ -34,11 +34,8 @@ function BindNotifications() {
             {
                 data: 'date',
                 render: function (data, type, row) {
-                    return data;
+                    return dateFormat(data, "dddd, mmmm dS, yyyy @ HH:MM:ss",true);;
                 }
-            },
-            {
-                data: 'id'
             }
         ]
     });
