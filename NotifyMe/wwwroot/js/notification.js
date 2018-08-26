@@ -1,7 +1,12 @@
 var dataTable=null;
 $(document).ready(function () {
     tinymce.init({
-        selector: 'textarea'
+        selector: 'textarea',
+        plugins: [
+            "advcode advlist anchor autolink codesample colorpicker contextmenu image imagetools",
+            " lists link linkchecker media mediaembed noneditable powerpaste preview",
+            " table template textcolor wordcount"
+          ]
     });
     BindNotifications();
 
