@@ -76,7 +76,9 @@ namespace NotifyMe.Services
 
         public string GetMessageTemplate(string message, string from, string image)
         {
-            if (_templates == null) return "NO TEMPLATE";
+            if (_templates == null) return "No plugin folder exists.";
+            if (_templates.Count() <= 0) return "No template is found.";
+            
             return _templates.ToList()[0].Create(message, from, image);
         }
     }
