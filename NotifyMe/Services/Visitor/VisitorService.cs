@@ -27,7 +27,7 @@ namespace NotifyMe.Services
         public List<NotifyMe.Data.Models.Connection> GetVisitors(int start, int length = 10)
         {
             var connections = _db.Connections.Include(i => i.User)
-                                    .OrderByDescending(o => o.ConnectionDate)
+                                    .OrderByDescending(o => o.Connected).ThenByDescending(d=>d.ConnectionDate)
                                     .Skip(start)
                                     .Take(length).ToList();
 
