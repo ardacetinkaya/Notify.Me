@@ -21,12 +21,14 @@ namespace NotifyMe.Services
         private NotifyDbContext _db;
 
         private readonly ILogger<Notify> _logger;
+        private readonly IVisitorService _visitor;
 
         public Notify(IServiceProvider provider, IConfiguration configuration, ILogger<Notify> logger)
         {
             _serviceProvider = provider;
             _configuration = configuration;
             _db = (NotifyDbContext)_serviceProvider.GetService(typeof(NotifyDbContext));
+            _visitor = (IVisitorService)_serviceProvider.GetService(typeof(IVisitorService));
             _logger = logger;
 
         }
@@ -52,22 +54,7 @@ namespace NotifyMe.Services
                 await Clients.All.SendAsync("SayHello", "I'm online");
 
             }
-            string connectionId = Context.ConnectionId ?? Guid.NewGuid().ToString();
-
-            var user = _db.Users.Where(u => u.UserName == name).FirstOrDefault();
-
-            var connection = new Connection()
-            {
-                ConnectionID = connectionId,
-                UserAgent = url,
-                Connected = true,
-                ConnectionDate = DateTime.Now,
-                User = user ?? new User() { UserName = name }
-            };
-
-            _db.Connections.Add(connection);
-
-            await _db.SaveChangesAsync();
+            _visitor.LetInVisitor(Context.ConnectionId ?? Guid.NewGuid().ToString(), name, url);
 
             _logger.LogInformation($"{name} is connected");
             await Clients.Caller.SendAsync("GiveName", name);
@@ -77,35 +64,9 @@ namespace NotifyMe.Services
         public override async Task OnDisconnectedAsync(Exception exception)
         {
 
-            var connection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
-            if (connection != null)
-            {
-                connection.Connected = false;
-                connection.DisconnectionDate = DateTime.Now;
-                _db.Connections.Update(connection);
-                await _db.SaveChangesAsync();
-
-            }
-
+            _visitor.LetOutVisitor(Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
-
-        public int GetConnected()
-        {
-            try
-            {
-                var result = _db.Connections.Where(s => s.Connected).ToList().Count;
-
-                return result;
-            }
-            catch (System.Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return -1;
-            }
-
-        }
-
         public async Task SendPrivateMessage(ChatMessage message)
         {
             if (string.IsNullOrEmpty(message.Message)) return;

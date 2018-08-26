@@ -6,40 +6,32 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NotifyMe.Data;
+using NotifyMe.Services;
 
 namespace NotifyMe.Pages
 {
     [Authorize]
     public class Users : PageModel
     {
-        private NotifyDbContext _db;
+        private IVisitorService _visitors;
         public Users(IServiceProvider provider, IConfiguration configuration)
         {
-            _db = (NotifyDbContext)provider.GetService(typeof(NotifyDbContext));
+            _visitors = (IVisitorService)provider.GetService(typeof(IVisitorService));
         }
-
-        public void OnGet()
+        
+        public JsonResult OnGetUsersAsync(int draw, int start, int length)
         {
-
-        }
-
-        public  JsonResult OnGetUsersAsync(int draw, int start, int length)
-        {
-            var totalCount = _db.Connections.Count();
-            var connections = _db.Connections.Include(i=>i.User)
-                                        
-                                        .OrderByDescending(o=>o.ConnectionDate)
-                                        .Skip(start)
-                                        .Take(length).ToList();
-
+            var totalCount = _visitors.GetTotalVisitorCount();
+            var connections = _visitors.GetVisitors(start,length);
+            
             dynamic response = new
             {
                 Data = connections,
-                Draw=draw,
+                Draw = draw,
                 RecordsTotal = totalCount,
                 RecordsFiltered = totalCount,
             };
-            
+
             return new JsonResult(response);
         }
     }

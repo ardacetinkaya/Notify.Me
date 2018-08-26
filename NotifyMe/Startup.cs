@@ -34,7 +34,7 @@ namespace NotifyMe
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.AddLogging();
-            services.AddTransient<VisitorService>();
+            services.AddTransient<IVisitorService,VisitorService>();
 
             services.AddDbContext<NotifyDbContext>(options =>
                 options.UseSqlServer(
