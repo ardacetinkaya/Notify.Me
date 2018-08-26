@@ -44,9 +44,10 @@ $(document).ready(function () {
 var messageAction = document.getElementById("btnsendmessage");
 if (messageAction !== null) {
     messageAction.addEventListener("click", function (event) {
-        var user = document.getElementById("txtuser").value;
-        var messageText = document.getElementById("txtmessage").value;
-        document.getElementById("txtmessage").value = '';
+        $("#txtuser").val()
+        var user =  $("#txtuser").val();
+        var messageText = $("#txtmessage").val();
+        $("#txtmessage").val('');
         var elem = document.getElementById('chatcontent');
         elem.scrollTop += 1000;
         var privateMessage = {
@@ -54,9 +55,7 @@ if (messageAction !== null) {
             message: messageText
         }
         if (messageText) {
-            connection.invoke("SendPrivateMessage", privateMessage).catch(function (err) {
-                return console.error;
-            });
+            connection.invoke("SendPrivateMessage", privateMessage).catch(err => console.error(err));
         }
         event.preventDefault();
     });

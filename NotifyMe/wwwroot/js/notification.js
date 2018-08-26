@@ -53,9 +53,7 @@ if (notificationAction !== null && connection != null) {
         }
 
         
-        connection.invoke("SendNotification", notification).catch(function (err) {
-            return console.error;
-        });
+        connection.invoke("SendNotification", notification).catch(err => console.error(err));
 
         event.preventDefault();
         dataTable.ajax.reload();
