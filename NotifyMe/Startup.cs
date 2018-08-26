@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NotifyMe.Services;
 
+
 namespace NotifyMe
 {
     public class Startup
@@ -22,9 +23,7 @@ namespace NotifyMe
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
         }
-
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -33,10 +32,11 @@ namespace NotifyMe
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
             services.AddLogging();
             services.AddTransient<IVisitorService, VisitorService>();
             services.AddTransient<IMessageService, MessageService>();
-            
+
             services.AddDbContext<NotifyDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -46,12 +46,6 @@ namespace NotifyMe
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
-
-            services.AddAuthentication().AddTwitter(twitterOptions =>
-            {
-                twitterOptions.ConsumerKey = Configuration["TwitterAPI:ConsumerKey"];
-                twitterOptions.ConsumerSecret = Configuration["TwitterAPI:ConsumerSecret"];
-            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

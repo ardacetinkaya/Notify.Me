@@ -185,18 +185,7 @@ namespace NotifyMe.Services
                 image = _configuration["HostUser:Image"];
                 from = $"{from}->{to}";
             }
-
-            var messageContainer = "<span class=\"chat-img pull-left\">"
-                           + $"          <img src=\"{image}\" alt=\"User\" class=\"img-circle\" />"
-                           + "     </span>"
-                           + "     <div class=\"chat-body clearfix\">"
-                           + "         <div class=\"header\">"
-                           + $"             <small class=\"text-muted\"><span class=\"glyphicon glyphicon-time\"></span>{DateTime.Now.ToShortTimeString()}</small>"
-                           + $"             <strong class=\"pull-right primary-font\">{from}</strong>"
-                           + "        </div>"
-                           + $"         <p>{message}"
-                           + "         </p>"
-                           + "     </div>";
+            var messageContainer = _message.GetMessageTemplate(message,from,image);
 
             return messageContainer;
         }
