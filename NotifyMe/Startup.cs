@@ -34,8 +34,9 @@ namespace NotifyMe
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.AddLogging();
-            services.AddTransient<IVisitorService,VisitorService>();
-
+            services.AddTransient<IVisitorService, VisitorService>();
+            services.AddTransient<IMessageService, MessageService>();
+            
             services.AddDbContext<NotifyDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -67,8 +68,8 @@ namespace NotifyMe
             {
                 con.KeepAliveInterval = TimeSpan.FromMinutes(5);
                 con.EnableDetailedErrors = true;
-                con.HandshakeTimeout=TimeSpan.FromMinutes(5);
-                
+                con.HandshakeTimeout = TimeSpan.FromMinutes(5);
+
             });
         }
 

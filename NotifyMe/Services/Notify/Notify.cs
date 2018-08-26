@@ -22,6 +22,7 @@ namespace NotifyMe.Services
 
         private readonly ILogger<Notify> _logger;
         private readonly IVisitorService _visitor;
+        private readonly IMessageService _message;
 
         public Notify(IServiceProvider provider, IConfiguration configuration, ILogger<Notify> logger)
         {
@@ -29,6 +30,7 @@ namespace NotifyMe.Services
             _configuration = configuration;
             _db = (NotifyDbContext)_serviceProvider.GetService(typeof(NotifyDbContext));
             _visitor = (IVisitorService)_serviceProvider.GetService(typeof(IVisitorService));
+            _message = (IMessageService)_serviceProvider.GetService(typeof(IMessageService));
             _logger = logger;
 
         }
@@ -36,9 +38,8 @@ namespace NotifyMe.Services
         public override async Task OnConnectedAsync()
         {
             var name = Context.User.Identity.Name;
-
             var response = Context.GetHttpContext().Response;
-            var url = response.Headers["Access-Control-Allow-Origin"];
+            var fromUrl = response.Headers["Access-Control-Allow-Origin"];
 
             if (string.IsNullOrEmpty(name))
             {
@@ -54,7 +55,7 @@ namespace NotifyMe.Services
                 await Clients.All.SendAsync("SayHello", "I'm online");
 
             }
-            _visitor.LetInVisitor(Context.ConnectionId ?? Guid.NewGuid().ToString(), name, url);
+            _visitor.LetInVisitor(Context.ConnectionId ?? Guid.NewGuid().ToString(), name, fromUrl);
 
             _logger.LogInformation($"{name} is connected");
             await Clients.Caller.SendAsync("GiveName", name);
@@ -100,7 +101,7 @@ namespace NotifyMe.Services
 
             if (!string.IsNullOrEmpty(receiver))
             {
-                var result = SaveMessage(new Message()
+                var result = _message.SaveMessage(Context.ConnectionId,new Message()
                 {
                     Content = message.Message,
                     RawContent = JsonConvert.SerializeObject(message),
@@ -165,7 +166,7 @@ namespace NotifyMe.Services
                     Type = MessageType.Notification.ToString()
 
                 };
-                if (SaveMessage(notificationMessage))
+                if (_message.SaveMessage(Context.ConnectionId,notificationMessage))
                 {
                     await Clients.All.SendAsync("ReceiveNotification", messageContainer);
                     _logger.LogInformation($"Notification message {message.Title} is sent.");
@@ -173,30 +174,7 @@ namespace NotifyMe.Services
             }
         }
 
-        private bool SaveMessage(Message message)
-        {
-            try
-            {
-                var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId && c.Connected).FirstOrDefault();
-                if (currentConnection != null)
-                {
-                    if (currentConnection.Messages == null) currentConnection.Messages = new List<Message>();
-
-                    message.Date = DateTime.Now;
-                    currentConnection.Messages.Add(message);
-
-                    _db.Connections.Update(currentConnection);
-                    _db.SaveChanges();
-                    return true;
-                }
-
-            }
-            catch (System.Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-            }
-            return false;
-        }
+        
 
         private string CreateMessage(string from, string message, string to = "")
         {

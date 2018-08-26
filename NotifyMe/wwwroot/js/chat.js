@@ -3,8 +3,7 @@ const connection = new signalR.HubConnectionBuilder()
     .withUrl("/Ntfctn")
     .configureLogging(signalR.LogLevel.Information)
     .build();
-connection.serverTimeoutInMilliseconds=300000;
-
+connection.serverTimeoutInMilliseconds = 300000;
 
 connection.on("ReceiveMessage", function (user, message) {
     var li = document.createElement("li");
@@ -15,35 +14,32 @@ connection.on("ReceiveMessage", function (user, message) {
 });
 
 connection.on("GiveName", function (name) {
-    if (document.getElementById("txtuser") !== null) {
-        var userName = document.getElementById("txtuser");
-        userName.value = name;
-    }
+    $("#txtuser").val(name)
 });
 
 connection.on("SayHello", function (name) {
-    var sayHello = document.getElementById("onlinehost");
-    if (sayHello !== null) {
-        sayHello.innerHTML = name;
-    }
+    $("#onlinehost").html(name);
 });
 
 connection.on("ReceiveNotification", function (message) {
-    var notification = document.getElementById("btnnotification");
-    if (notification !== null) {
-        document.getElementById("notificationdata").innerHTML = message;
-        document.getElementById("btnnotification").click();
-    }
-
+    $("#notifypopup").html(message);
+    $('#centralModalInfo').modal('show');
 });
 $(document).ready(function () {
     $('#messagesList').on('click', 'li', function () {
-        document.getElementById("txtmessage").value = '@' + $(this).find("strong").html() + ': ';
+        $("#txtmessage").val('@' + $(this).find("strong").html() + ': ');
         $("#txtmessage").focus();
-    })
+    });
+
+    $( "#txtmessage" ).keyup(function( event ) {
+    
+    }).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        document.getElementById("btnsendmessage").click();
+      }
+    });
 });
-
-
 
 var messageAction = document.getElementById("btnsendmessage");
 if (messageAction !== null) {
@@ -66,13 +62,4 @@ if (messageAction !== null) {
     });
 }
 
-var messageInput = document.getElementById("txtmessage");
-if (messageInput !== null) {
-    messageInput.addEventListener("keyup", function (event) {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-            document.getElementById("btnsendmessage").click();
-        }
-    });
-}
 connection.start().catch(err => console.error(err));
