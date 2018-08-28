@@ -10,8 +10,13 @@
 {
     @if (SignInManager.IsSignedIn(User))
     {
-        <script type="text/javascript" src="~/js/chat.js"></script>
         
+        <environment include="Development">
+            <script type="text/javascript" src="~/js/chat.js"></script>
+        </environment>
+         <environment exclude="Development">
+              <script type="text/javascript" src="~/js/chat.min.js"></script>
+        </environment>
         <script>           
             $(".arstatus").click(function () {
                 $.ajax({

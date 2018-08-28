@@ -6,6 +6,12 @@
       ]
     },
     {
+        "outputFileName": "wwwroot/js/chat.min.js",
+        "inputFiles": [
+          "wwwroot/js/chat.js"
+        ]
+      },
+    {
       "outputFileName": "wwwroot/js/site.min.js",
       "inputFiles": [
         "wwwroot/js/site.js"
