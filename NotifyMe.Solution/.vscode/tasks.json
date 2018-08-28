@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/NotifyMe.csproj"
+                "${workspaceFolder}/NotifyMe/NotifyMe.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
