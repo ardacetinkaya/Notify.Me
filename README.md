@@ -2,6 +2,8 @@
 
 This is a simple application kick-off to provide communication features for any kind of application. It is a demostration app., so it has very simple implementation. This is the host application which is an ASP.NET Core(v2.1) application.
 
+[![Build status](https://miyopvss.visualstudio.com/miyop/_apis/build/status/NotifyME.Web?branch=master)](https://miyopvss.visualstudio.com/miyop/_build/latest?definitionId=1&branch=master)
+
 Some features;
 
 1. The main behaviour is done with ASP.NET Core v2.1 and SignalR
