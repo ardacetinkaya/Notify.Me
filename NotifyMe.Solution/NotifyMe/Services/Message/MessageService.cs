@@ -30,9 +30,11 @@ namespace NotifyMe.Services
             {
                 var rootPath = hosting.ContentRootPath;
                 var path = Path.Combine(rootPath, "Plugins");
+                _logger.LogInformation($"Path is:{path}");
                 var assemblies = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories)
                             .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath)
                             .ToList();
+                _logger.LogInformation($"Template files:{assemblies.Count.ToString()}");
                 var pluginContainer = new ContainerConfiguration().WithAssemblies(assemblies);
                 using (var container = pluginContainer.CreateContainer())
                 {
