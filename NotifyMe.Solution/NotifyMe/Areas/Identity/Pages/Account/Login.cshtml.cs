@@ -27,13 +27,15 @@ namespace NotifyMe.Areas.Identity.Pages.Account
             _configuration = configuration;
             _logger = logger;
 
-            ImageUrl="http://www.minepla.net/wp-content/uploads/IMG_7264.jpg";
+            ImageUrl=_configuration["HostUser:Image"];
+            Username=_configuration["HostUser:Name"];
         }
 
         [BindProperty]
         public LoginInputModel Input { get; set; }
 
         public string ImageUrl { get; private set; }
+        public string Username { get; private set; } 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }

@@ -29,6 +29,38 @@
 .chat-img .img-circle {
     width: 100%;
 }
+.chat-header.offline
+{
+    color:gray;
+}
+.chat-header.offline img
+{
+    border:2px gray solid;
+}
+.chat-header.online
+{
+    color:green;
+}
+.chat-header.online img
+{
+    border:2px green solid;
+}
+.chat-header.busy
+{
+    color:red;
+}
+.chat-header.busy img
+{
+    border:2px red solid;
+}
+.chat-header.away
+{
+    color:orange;
+}
+.chat-header.away img
+{
+    border:2px orange solid;
+}
 
 .chat li {
     margin-bottom: 10px;

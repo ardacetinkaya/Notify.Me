@@ -19,6 +19,9 @@ connection.on("GiveName", function (name) {
 
 connection.on("SayHello", function (name) {
     $("#onlinehost").html(name);
+    $('#chatheader').removeClass();
+    $('#chatheader').addClass("chat-header");
+    $('#chatheader').addClass(name);
 });
 
 connection.on("ReceiveNotification", function (message) {

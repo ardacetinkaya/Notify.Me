@@ -34,7 +34,7 @@ namespace NotifyMe.Pages
                 if (!string.IsNullOrEmpty(userName))
                 {
                     //Another way to say hello from codebehind of a Razor page
-                    await _hub.Clients.All.SendAsync("SayHello", $"I'm {status}");
+                    await _hub.Clients.All.SendAsync("SayHello", $"{status.ToLower()}");
                 }
 
             }

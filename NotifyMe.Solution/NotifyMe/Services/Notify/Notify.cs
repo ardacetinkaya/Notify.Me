@@ -40,7 +40,7 @@ namespace NotifyMe.Services
             var name = Context.User.Identity.Name;
             var response = Context.GetHttpContext().Response;
             var fromUrl = response.Headers["Access-Control-Allow-Origin"];
-
+            var isHostConnected = false;
             if (string.IsNullOrEmpty(name))
             {
                 lock (_syncLock)
@@ -52,21 +52,35 @@ namespace NotifyMe.Services
             else
             {
                 name = _configuration["HostUser:Name"];
-                await Clients.All.SendAsync("SayHello", "I'm online");
+                await Clients.All.SendAsync("SayHello", "online");
+                isHostConnected = true;
 
             }
             _visitor.LetInVisitor(Context.ConnectionId ?? Guid.NewGuid().ToString(), name, fromUrl);
 
-            _logger.LogInformation($"{name} is connected");
+            _logger.LogInformation($"{name} is connected.");
+
             await Clients.Caller.SendAsync("GiveName", name);
+            if (!isHostConnected)
+            {
+                await SendWelcomeMessage(new ChatMessage()
+                {
+                    Message = "How can I help you?",
+                    Username = name
+                });
+            }
+
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-
             _visitor.LetOutVisitor(Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
+        }
+        public async Task SendWelcomeMessage(ChatMessage message)
+        {
+                await Clients.Caller.SendAsync("ReceiveMessage", message.Username, message.Message);
         }
         public async Task SendPrivateMessage(ChatMessage message)
         {
@@ -144,7 +158,7 @@ namespace NotifyMe.Services
 
 
 
-        private string CreateMessage(MessageType type, string from, string message, string to = "",string title="", string link = "")
+        private string CreateMessage(MessageType type, string from, string message, string to = "", string title = "", string link = "")
         {
             var messageContainer = string.Empty;
             switch (type)
@@ -155,7 +169,7 @@ namespace NotifyMe.Services
                     if (from == _configuration["HostUser:Name"])
                     {
                         image = _configuration["HostUser:Image"];
-                        from = $"{from}->{to}";
+                        from = $"{from} -> {to}";
                     }
                     messageContainer = _message.GetMessageTemplate("Base Chat", message, from, image);
                     break;
