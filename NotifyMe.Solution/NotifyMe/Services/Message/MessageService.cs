@@ -19,36 +19,16 @@ namespace NotifyMe.Services
     public class MessageService : IMessageService
     {
         private NotifyDbContext _db;
-        private ILogger<MessageService> _logger;
+        private readonly ILogger<MessageService> _logger;
+        private readonly IHostingEnvironment _hosting;
         [ImportMany]
         private IEnumerable<IBaseTemplate> _templates { get; set; }
         public MessageService(IServiceProvider provider, IConfiguration configuration, IHostingEnvironment hosting, ILogger<MessageService> logger)
         {
             _logger = logger;
             _db = (NotifyDbContext)provider.GetService(typeof(NotifyDbContext));
-            try
-            {
-                var rootPath = hosting.ContentRootPath;
-                var path = Path.Combine(rootPath, "Plugins");
-                _logger.LogInformation($"Path is:{path}");
-                var assemblies = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories)
-                            .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath)
-                            .ToList();
-                _logger.LogInformation($"Template files:{assemblies.Count.ToString()}");
-                var pluginContainer = new ContainerConfiguration().WithAssemblies(assemblies);
-                using (var container = pluginContainer.CreateContainer())
-                {
-                    _templates = container.GetExports<IBaseTemplate>("Templates");
-                }
-            }
-            catch (System.IO.DirectoryNotFoundException dfe)
-            {
-                _logger.LogError(dfe.Message);
-            }
-            catch (System.Exception ex)
-            {
-                _logger.LogError($"Unable to find message templates. {ex.Message}");
-            }
+            _hosting = hosting;
+            
         }
 
         public bool SaveMessage(string connectionId, Message message)
@@ -78,6 +58,31 @@ namespace NotifyMe.Services
 
         public string GetMessageTemplate(string templateName, string message, string from, string image)
         {
+            try
+            {
+                _templates = null;
+                var rootPath = _hosting.ContentRootPath;
+                var path = Path.Combine(rootPath, "Plugins");
+                _logger.LogInformation($"Path is: {path}");
+                var assemblies = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories)
+                            .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath)
+                            .ToList();
+                _logger.LogInformation($"Template files: {assemblies.Count.ToString()}");
+                var pluginContainer = new ContainerConfiguration().WithAssemblies(assemblies);
+                using (var container = pluginContainer.CreateContainer())
+                {
+                    _templates = container.GetExports<IBaseTemplate>("Templates");
+                }
+            }
+            catch (System.IO.DirectoryNotFoundException dfe)
+            {
+                _logger.LogError(dfe.Message);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Unable to find message templates. {ex.Message}");
+            }
+
             if (_templates == null) return "No plugin folder exists.";
 
             var template = _templates.Where(t => t.Name == templateName).FirstOrDefault();

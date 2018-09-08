@@ -16,10 +16,9 @@ namespace NotifyMe.Services
     {
         private static readonly Random _random = new Random(10);
         private static readonly object _syncLock = new object();
-        private IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
-        private NotifyDbContext _db;
-
+        private readonly NotifyDbContext _db;
         private readonly ILogger<Notify> _logger;
         private readonly IVisitorService _visitor;
         private readonly IMessageService _message;
@@ -66,7 +65,7 @@ namespace NotifyMe.Services
                 await SendWelcomeMessage(new ChatMessage()
                 {
                     Message = "How can I help you?",
-                    Username = name
+                    Username = _configuration["HostUser:Name"]
                 });
             }
 
@@ -80,7 +79,8 @@ namespace NotifyMe.Services
         }
         public async Task SendWelcomeMessage(ChatMessage message)
         {
-                await Clients.Caller.SendAsync("ReceiveMessage", message.Username, message.Message);
+            var messageContainer = CreateMessage(MessageType.Chat,message.Username,message.Message);
+            await Clients.Caller.SendAsync("ReceiveMessage", message.Username, messageContainer);
         }
         public async Task SendPrivateMessage(ChatMessage message)
         {
@@ -169,12 +169,15 @@ namespace NotifyMe.Services
                     if (from == _configuration["HostUser:Name"])
                     {
                         image = _configuration["HostUser:Image"];
-                        from = $"{from} -> {to}";
+                        if(!string.IsNullOrEmpty(to))
+                            from = $"{from} -> {to}";
                     }
                     messageContainer = _message.GetMessageTemplate("Base Chat", message, from, image);
                     break;
+
                 case MessageType.Notification:
                     messageContainer = _message.GetMessageTemplate("Base Notification", message, from, "");
+                    
                     var messageLink = string.Empty;
                     if (!string.IsNullOrEmpty(link))
                     {
