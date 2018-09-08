@@ -1,0 +1,40 @@
+@page
+@model Templates
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    ViewData["Title"] = "Templates";
+}
+
+@section Scripts
+{
+
+}
+<pre>
+    Upload templates
+</pre>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" id="accordion">
+                        <span class="glyphicon glyphicon-file"></span> Templates
+                        <div class="btn-group pull-right">
+                            
+                        </div>
+                    </div>
+                    <div class="panel-collapse collapse in">
+                        <div class="panel-body" style="height: 100%;" >
+                            <form method="post" enctype="multipart/form-data">
+                                <input type="file" asp-for="Upload" />
+
+                                <button class="btn pull-right btn-warning btn-sm">Upload</button>
+                            </form>
+                        </div>
+                        <div class="panel-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>

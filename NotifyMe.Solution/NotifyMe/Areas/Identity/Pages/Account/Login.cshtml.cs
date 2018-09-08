@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using NotifyMe.UI.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace NotifyMe.Areas.Identity.Pages.Account
 {
@@ -17,17 +18,22 @@ namespace NotifyMe.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, IConfiguration configuration, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _configuration = configuration;
             _logger = logger;
+
+            ImageUrl="http://www.minepla.net/wp-content/uploads/IMG_7264.jpg";
         }
 
         [BindProperty]
         public LoginInputModel Input { get; set; }
 
+        public string ImageUrl { get; private set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
@@ -57,7 +63,6 @@ namespace NotifyMe.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
