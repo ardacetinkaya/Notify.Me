@@ -5,6 +5,6 @@ namespace NotifyMe.Services
     public interface IMessageService
     {
         bool SaveMessage(string connectionId, Message message);
-        string GetMessageTemplate(string message, string from, string image);
+        string GetMessageTemplate(string templateName,string message, string from, string image);
     }
 }

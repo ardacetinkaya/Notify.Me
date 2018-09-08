@@ -4,9 +4,11 @@ using NotifyMe.Common;
 
 namespace NotifyMe.Templates
 {
-    [Export("ChatMessage",typeof(IBaseTemplate))]
+    [Export("Templates",typeof(IBaseTemplate))]
     public class ChatMessageBaseTemplate : IBaseTemplate
     {
+        public string Name => "Base Chat";
+
         public string Create(string message, string from, string image)
         {
             var messageContainer = "<span class=\"chat-img pull-left\">"

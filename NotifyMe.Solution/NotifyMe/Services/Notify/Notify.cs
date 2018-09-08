@@ -97,11 +97,11 @@ namespace NotifyMe.Services
             receiverConnections.Add(currentConnection.ConnectionID);
 
             var readOnly = receiverConnections.AsReadOnly();
-            var messageContainer = CreateMessage(message.Username, message.Message, receiver);
+            var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message, receiver);
 
             if (!string.IsNullOrEmpty(receiver))
             {
-                var result = _message.SaveMessage(Context.ConnectionId,new Message()
+                var result = _message.SaveMessage(Context.ConnectionId, new Message()
                 {
                     Content = message.Message,
                     RawContent = JsonConvert.SerializeObject(message),
@@ -121,40 +121,8 @@ namespace NotifyMe.Services
             if (message != null)
             {
                 message.Date = DateTimeOffset.Now;
-                var messageContainer = @"<div class='modal fade' id='centralModalInfo' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
-<div class='modal-dialog modal-side modal-top-right' role='document'>
-    <div class='modal-content'>
-        <div class='modal-header'>
-            <p class='heading lead'>{0}</p>
+                var messageContainer = CreateMessage(MessageType.Notification, _configuration["HostUser:Name"], message.Message);
 
-            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                <span aria-hidden='true' class='white-text'>&times;</span>
-            </button>
-        </div>
-
-        <div class='modal-body'>
-            <div class='text-center' id='notificationcontent'>
-                <i class='fa fa-check fa-4x mb-3 animated rotateIn'></i>
-                <p>{1}</p>
-            </div>
-        </div>
-        <div class='modal-footer justify-content-center'>
-            {2}
-            <a type='button' class='btn btn-outline-primary waves-effect' data-dismiss='modal'>Ok, thanks...</a>
-        </div>
-    </div>
-</div>
-</div>";
-
-                var link = string.Empty;
-                if (!string.IsNullOrEmpty(message.Link))
-                {
-                    link = $"<a type='button' class='btn btn-primary' hrep='{message.Link}'>Go<i class='fa fa-diamond ml-1'></i></a>";
-                }
-                messageContainer = string.Format(messageContainer,
-                    message.Title,
-                    message.Message,
-                    link);
                 var messageContent = JsonConvert.SerializeObject(message);
                 var notificationMessage = new Message()
                 {
@@ -166,7 +134,7 @@ namespace NotifyMe.Services
                     Type = MessageType.Notification.ToString()
 
                 };
-                if (_message.SaveMessage(Context.ConnectionId,notificationMessage))
+                if (_message.SaveMessage(Context.ConnectionId, notificationMessage))
                 {
                     await Clients.All.SendAsync("ReceiveNotification", messageContainer);
                     _logger.LogInformation($"Notification message {message.Title} is sent.");
@@ -174,20 +142,40 @@ namespace NotifyMe.Services
             }
         }
 
-        
 
-        private string CreateMessage(string from, string message, string to = "")
+
+        private string CreateMessage(MessageType type, string from, string message, string to = "",string title="", string link = "")
         {
-            var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
-
-            if (from == _configuration["HostUser:Name"])
+            var messageContainer = string.Empty;
+            switch (type)
             {
-                image = _configuration["HostUser:Image"];
-                from = $"{from}->{to}";
-            }
-            var messageContainer = _message.GetMessageTemplate(message,from,image);
+                case MessageType.Chat:
+                    var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
 
+                    if (from == _configuration["HostUser:Name"])
+                    {
+                        image = _configuration["HostUser:Image"];
+                        from = $"{from}->{to}";
+                    }
+                    messageContainer = _message.GetMessageTemplate("Base Chat", message, from, image);
+                    break;
+                case MessageType.Notification:
+                    messageContainer = _message.GetMessageTemplate("Base Notification", message, from, "");
+                    var messageLink = string.Empty;
+                    if (!string.IsNullOrEmpty(link))
+                    {
+                        messageLink = $"<a type='button' class='btn btn-primary' hrep='{link}'>Go<i class='fa fa-diamond ml-1'></i></a>";
+                    }
+                    messageContainer = string.Format(messageContainer,
+                        title,
+                        message,
+                        messageLink);
+                    break;
+                default:
+                    break;
+            }
             return messageContainer;
+
         }
     }
 

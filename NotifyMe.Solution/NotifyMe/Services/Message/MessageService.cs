@@ -38,7 +38,7 @@ namespace NotifyMe.Services
                 var pluginContainer = new ContainerConfiguration().WithAssemblies(assemblies);
                 using (var container = pluginContainer.CreateContainer())
                 {
-                    _templates = container.GetExports<IBaseTemplate>("ChatMessage");
+                    _templates = container.GetExports<IBaseTemplate>("Templates");
                 }
             }
             catch (System.IO.DirectoryNotFoundException dfe)
@@ -76,12 +76,14 @@ namespace NotifyMe.Services
             return false;
         }
 
-        public string GetMessageTemplate(string message, string from, string image)
+        public string GetMessageTemplate(string templateName, string message, string from, string image)
         {
             if (_templates == null) return "No plugin folder exists.";
-            if (_templates.Count() <= 0) return "No template is found.";
-            
-            return _templates.ToList()[0].Create(message, from, image);
+
+            var template = _templates.Where(t => t.Name == templateName).FirstOrDefault();
+
+            if (template == null) return $"No template is found with given name:{templateName}";
+            return template.Create(message, from, image);
         }
     }
 }
