@@ -36,6 +36,7 @@ namespace NotifyMe
             services.AddLogging();
             services.AddTransient<IVisitorService, VisitorService>();
             services.AddTransient<IMessageService, MessageService>();
+            services.AddSingleton<ITemplateService, TemplateService>();
 
             services.AddDbContext<NotifyDbContext>(options =>
                 options.UseSqlServer(

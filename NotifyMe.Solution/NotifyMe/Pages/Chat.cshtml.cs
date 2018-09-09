@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using NotifyMe.Services;
 
 namespace NotifyMe.Pages
@@ -14,14 +15,16 @@ namespace NotifyMe.Pages
     [Authorize]
     public class Chat : PageModel
     {
-        private IVisitorService _visitors;
+        private readonly IVisitorService _visitors;
+        private readonly ILogger<Chat> _logger;
 
         public List<Data.Models.User> Users { get; private set; }
 
          public List<Data.Models.Message> Messages { get; private set; }
-        public Chat(IServiceProvider provider)
+        public Chat(IServiceProvider provider,ILogger<Chat> logger)
         {
             _visitors = (IVisitorService)provider.GetService(typeof(IVisitorService));
+            _logger = logger;
         }
 
         public void OnGet()
@@ -33,6 +36,10 @@ namespace NotifyMe.Pages
         {
             Users = _visitors.GetUsers();
             Messages= _visitors.GetUserMessages(userId);
+
+            _logger.LogInformation("Messages:"+ Messages.Count);
+
+            
         }
     }
 }
