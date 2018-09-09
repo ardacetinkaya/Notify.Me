@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
+using NotifyMe.Common;
 using NotifyMe.Data;
 using NotifyMe.Services;
 
@@ -23,7 +24,6 @@ namespace NotifyMe.Pages
         private readonly IHostingEnvironment _environment;
         private readonly ITemplateService _templateService;
         
-
         public Templates(IHostingEnvironment environment,IServiceProvider provider)
         {
             _environment = environment;
@@ -32,6 +32,14 @@ namespace NotifyMe.Pages
         }
         [BindProperty]
         public IFormFile Upload { get; set; }
+
+        public void OnGet()
+        {
+
+            TemplateList = _templateService.Templates;
+        }
+
+        public IEnumerable<IBaseTemplate> TemplateList { get; private set;}
 
         public async Task OnPostAsync()
         {

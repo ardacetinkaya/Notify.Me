@@ -24,7 +24,15 @@
                     </div>
                     <div class="panel-collapse collapse in">
                         <div class="panel-body" style="height: 100%;" >
-
+                            <ul>
+                                @if(Model.TemplateList!=null)
+                                {
+                                    @foreach (var temp in Model.TemplateList)
+                                    {
+                                        <li>@temp.Name</li>
+                                    }
+                                }
+                            </ul>
                         </div>
                         <div class="panel-footer">
 

@@ -28,9 +28,7 @@ namespace NotifyMe.Services
             _hosting = hosting;
 
             Load();
-
         }
-
         public void Load()
         {
             try
@@ -47,6 +45,7 @@ namespace NotifyMe.Services
                 using (var container = pluginContainer.CreateContainer())
                 {
                     Templates = container.GetExports<IBaseTemplate>("Templates");
+                    
                 }
 
             }
