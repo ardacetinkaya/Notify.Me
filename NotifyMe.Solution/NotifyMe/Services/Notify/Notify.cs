@@ -75,6 +75,7 @@ namespace NotifyMe.Services
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             _visitor.LetOutVisitor(Context.ConnectionId);
+            _logger.LogInformation($"User is disconnected. Detail: {exception.Message}");
             await base.OnDisconnectedAsync(exception);
         }
         public async Task SendWelcomeMessage(ChatMessage message)
@@ -87,6 +88,7 @@ namespace NotifyMe.Services
             if (string.IsNullOrEmpty(message.Message)) return;
 
             var receiver = string.Empty;
+            message.Date = DateTimeOffset.Now;
             if (message.Message.StartsWith('@'))
             {
                 var index = message.Message.IndexOf(":");
@@ -94,9 +96,9 @@ namespace NotifyMe.Services
                 message.Message = message.Message.Substring(index + 1);
             }
             else
+            {
                 receiver = _configuration["HostUser:Name"];
-
-
+            }
 
             var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
             var receiverConnections = new List<string>();
@@ -110,7 +112,7 @@ namespace NotifyMe.Services
             }
             receiverConnections.Add(currentConnection.ConnectionID);
 
-            var readOnly = receiverConnections.AsReadOnly();
+            
             var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message, receiver);
 
             if (!string.IsNullOrEmpty(receiver))
@@ -121,11 +123,14 @@ namespace NotifyMe.Services
                     RawContent = JsonConvert.SerializeObject(message),
                     ToUser = receiver,
                     FromUser = message.Username,
-                    Date = DateTime.Now,
+                    Date = message.Date.DateTime,
                     Type = MessageType.Chat.ToString()
                 });
                 if (result)
+                {
+                    var readOnly = receiverConnections.AsReadOnly();
                     await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username, messageContainer);
+                }
             }
         }
 

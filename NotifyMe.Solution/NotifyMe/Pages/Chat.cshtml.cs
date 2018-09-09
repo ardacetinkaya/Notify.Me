@@ -16,30 +16,45 @@ namespace NotifyMe.Pages
     public class Chat : PageModel
     {
         private readonly IVisitorService _visitors;
+        private readonly ITemplateService _templateService;
         private readonly ILogger<Chat> _logger;
 
         public List<Data.Models.User> Users { get; private set; }
 
-         public List<Data.Models.Message> Messages { get; private set; }
-        public Chat(IServiceProvider provider,ILogger<Chat> logger)
+        public List<string> Messages { get; private set; }
+        public Chat(IServiceProvider provider, ILogger<Chat> logger)
         {
             _visitors = (IVisitorService)provider.GetService(typeof(IVisitorService));
+            _templateService = (ITemplateService)provider.GetService(typeof(ITemplateService));
             _logger = logger;
+            Users = _visitors.GetUsers();
         }
 
         public void OnGet()
         {
-            Users = _visitors.GetUsers();
+
         }
 
         public void OnGetUserChatAsync(int userId)
         {
-            Users = _visitors.GetUsers();
-            Messages= _visitors.GetUserMessages(userId);
 
-            _logger.LogInformation("Messages:"+ Messages.Count);
+            var user = Users.Where(u => u.Id == userId).FirstOrDefault();
 
-            
+            if (user != null)
+            {
+                var messages = _visitors.GetUserMessages(user.UserName);
+
+                Messages = new List<string>();
+                foreach (var message in messages)
+                {
+                    var messageString = _templateService.GetTemplate("Base Chat").Create(message.Content, message.FromUser, "http://placehold.it/50/FA6F57/fff&text=WU");
+                    Messages.Add(messageString);
+                }
+
+                _logger.LogInformation("Messages:" + messages.Count);
+            }
+
+
         }
     }
 }

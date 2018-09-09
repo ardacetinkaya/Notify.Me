@@ -77,9 +77,19 @@ namespace NotifyMe.Services
             }
         }
 
-        public List<Message> GetUserMessages(long userId)
+        public List<Message> GetUserMessages(string name)
         {
-             return new List<Message>();
+            try
+            {
+                var messages = _db.Message.Where(u => u.FromUser == name || u.ToUser==name).ToList();
+                return messages;
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError($"Unable to get user's message(s). Detail: {ex.Message}");
+            }
+
+            return new List<Message>();
         }
     }
 }

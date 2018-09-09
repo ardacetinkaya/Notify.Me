@@ -1,25 +1,30 @@
-[
-    {
-      "outputFileName": "wwwroot/css/site.min.css",
-      "inputFiles": [
-        "wwwroot/css/site.css"
-      ]
+[{
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/chat.min.js",
+    "inputFiles": [
+      "wwwroot/js/chat.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/chat.admin.min.js",
+    "inputFiles": [
+      "wwwroot/js/chat.admin.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
     },
-    {
-        "outputFileName": "wwwroot/js/chat.min.js",
-        "inputFiles": [
-          "wwwroot/js/chat.js"
-        ]
-      },
-    {
-      "outputFileName": "wwwroot/js/site.min.js",
-      "inputFiles": [
-        "wwwroot/js/site.js"
-      ],
-      "minify": {
-        "enabled": true,
-        "renameLocals": true
-      },
-      "sourceMap": false
-    }
-  ]
+    "sourceMap": false
+  }
+]

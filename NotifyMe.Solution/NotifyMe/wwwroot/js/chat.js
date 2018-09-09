@@ -7,10 +7,8 @@ connection.serverTimeoutInMilliseconds = 300000;
 
 connection.on("ReceiveMessage", function (user, message) {
     var li = document.createElement("li");
-    li.classList.add("left");
-    li.classList.add("clearfix");
-    li.innerHTML = message;
-    document.getElementById("messagesList").appendChild(li);
+    $("#messagesList").append("<li class='left clearfix'>"+message+"</li>");
+
 });
 
 connection.on("GiveName", function (name) {
@@ -29,11 +27,6 @@ connection.on("ReceiveNotification", function (message) {
     $('#centralModalInfo').modal('show');
 });
 $(document).ready(function () {
-    $('#messagesList').on('click', 'li', function () {
-        $("#txtmessage").val('@' + $(this).find("strong").html() + ': ');
-        $("#txtmessage").focus();
-    });
-
     $( "#txtmessage" ).keyup(function( event ) {
     
     }).keydown(function( event ) {
