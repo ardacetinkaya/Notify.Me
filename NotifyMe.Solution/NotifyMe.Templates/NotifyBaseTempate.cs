@@ -9,7 +9,7 @@ namespace NotifyMe.Templates
     {
         public string Name => "Base Notification";
 
-        public string Create(string message, string from, string image)
+        public string Create(string message, string from, string image,DateTimeOffset date,string to)
         {
             var messageContainer = @"<div class='modal fade' id='centralModalInfo' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
 <div class='modal-dialog modal-side modal-top-right' role='document'>

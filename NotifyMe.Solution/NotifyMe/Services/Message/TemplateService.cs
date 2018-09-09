@@ -16,7 +16,7 @@ using NotifyMe.Data.Models;
 
 namespace NotifyMe.Services
 {
-    public class TemplateService:ITemplateService
+    public class TemplateService : ITemplateService
     {
         private readonly ILogger<MessageService> _logger;
         private readonly IHostingEnvironment _hosting;
@@ -45,7 +45,7 @@ namespace NotifyMe.Services
                 using (var container = pluginContainer.CreateContainer())
                 {
                     Templates = container.GetExports<IBaseTemplate>("Templates");
-                    
+
                 }
 
             }
@@ -61,14 +61,15 @@ namespace NotifyMe.Services
 
         public IBaseTemplate GetTemplate(string name)
         {
-            IBaseTemplate _t =null;
+            IBaseTemplate _t = null;
             try
             {
-                 _t = Templates.Where(t => t.Name == name).FirstOrDefault();
+                if (Templates != null)
+                    _t = Templates.Where(t => t.Name == name).FirstOrDefault();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                
+                _logger.LogError($"Unable to find '{name}' template. {ex.Message}");
                 throw;
             }
 

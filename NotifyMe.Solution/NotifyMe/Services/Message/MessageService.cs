@@ -57,13 +57,13 @@ namespace NotifyMe.Services
             return false;
         }
 
-        public string GetMessageTemplate(string templateName, string message, string from, string image)
+        public string CreateMessage(string templateName, string message, string from, string image)
         {
             try
             {
                 var template = _templateService.GetTemplate(templateName);
                 if (template == null) return $"No template is found with given name:{templateName}";
-                return template.Create(message, from, image);
+                return template.Create(message, from, image,DateTimeOffset.Now,"");
 
             }
             catch (System.Exception ex)

@@ -47,11 +47,17 @@ namespace NotifyMe.Pages
                 Messages = new List<string>();
                 foreach (var message in messages)
                 {
-                    var messageString = _templateService.GetTemplate("Base Chat").Create(message.Content, message.FromUser, "http://placehold.it/50/FA6F57/fff&text=WU");
+                    var messageString = _templateService.GetTemplate("Base Chat")
+                                                        .Create(message.Content
+                                                            , message.FromUser
+                                                            , "http://placehold.it/50/FA6F57/fff&text=WU"
+                                                            , message.Date
+                                                            , message.ToUser);
+
                     Messages.Add(messageString);
                 }
 
-                _logger.LogInformation("Messages:" + messages.Count);
+                _logger.LogInformation($"Messages:{Messages.Count}");
             }
 
 

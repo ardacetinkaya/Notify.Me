@@ -3,15 +3,11 @@ using Newtonsoft.Json;
 
 namespace NotifyMe.Services
 {
-    public class ChatMessage
+    public class ChatMessage :BaseMessage
     {
-        [JsonProperty("message")]
-        public string Message { get; set; }
         [JsonProperty("username")]
         public string Username { get; set; }
 
-
-        public DateTimeOffset Date { get; set; }
 
     }
 }

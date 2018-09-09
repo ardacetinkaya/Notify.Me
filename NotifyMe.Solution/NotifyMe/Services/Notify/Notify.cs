@@ -142,14 +142,13 @@ namespace NotifyMe.Services
                 message.Date = DateTimeOffset.Now;
                 var messageContainer = CreateMessage(MessageType.Notification, _configuration["HostUser:Name"], message.Message);
 
-                var messageContent = JsonConvert.SerializeObject(message);
                 var notificationMessage = new Message()
                 {
                     Content = message.Message,
-                    RawContent = messageContent,
+                    RawContent = JsonConvert.SerializeObject(message),
                     ToUser = "Everyone",
                     FromUser = _configuration["HostUser:Name"],
-                    Date = DateTime.Now,
+                    Date = message.Date.DateTime,
                     Type = MessageType.Notification.ToString()
 
                 };
@@ -177,11 +176,11 @@ namespace NotifyMe.Services
                         if(!string.IsNullOrEmpty(to))
                             from = $"{from} -> {to}";
                     }
-                    messageContainer = _message.GetMessageTemplate("Base Chat", message, from, image);
+                    messageContainer = _message.CreateMessage("Base Chat", message, from, image);
                     break;
 
                 case MessageType.Notification:
-                    messageContainer = _message.GetMessageTemplate("Base Notification", message, from, "");
+                    messageContainer = _message.CreateMessage("Base Notification", message, from, "");
                     
                     var messageLink = string.Empty;
                     if (!string.IsNullOrEmpty(link))
