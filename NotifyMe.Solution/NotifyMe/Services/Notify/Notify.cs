@@ -75,7 +75,7 @@ namespace NotifyMe.Services
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             _visitor.LetOutVisitor(Context.ConnectionId);
-            _logger.LogInformation($"User is disconnected. Detail: {exception.Message}");
+            _logger.LogInformation($"User is disconnected. Detail: {exception?.Message}");
             await base.OnDisconnectedAsync(exception);
         }
         public async Task SendWelcomeMessage(ChatMessage message)

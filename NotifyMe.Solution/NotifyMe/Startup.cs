@@ -13,7 +13,10 @@ using NotifyMe.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NotifyMe.Services;
-
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace NotifyMe
 {
@@ -33,6 +36,9 @@ namespace NotifyMe
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddHealthChecks()
+                    .AddCheck<CustomCheck>();
+            
             services.AddLogging();
             services.AddTransient<IVisitorService, VisitorService>();
             services.AddTransient<IMessageService, MessageService>();
@@ -81,6 +87,10 @@ namespace NotifyMe
                 app.UseHsts();
             }
 
+            app.UseHealthChecks("/IsHealthy" ,new HealthCheckOptions()
+            {
+                ResponseWriter = WriteAsJson
+            });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -93,6 +103,14 @@ namespace NotifyMe
             });
             app.UseMvc();
 
+        }
+
+        private static Task WriteAsJson(HttpContext httpContext,CompositeHealthCheckResult result)
+        {
+            httpContext.Response.ContentType = "application/json";
+            var json = JsonConvert.SerializeObject(result,Formatting.Indented);
+
+            return httpContext.Response.WriteAsync(json);
         }
     }
 }

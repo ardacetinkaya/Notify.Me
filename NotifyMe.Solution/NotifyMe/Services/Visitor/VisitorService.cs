@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -91,5 +92,12 @@ namespace NotifyMe.Services
 
             return new List<Message>();
         }
+
+        async Task<DateTime>  IVisitorService.GetLastConnection()
+        {
+            DateTime lastConnection = await _db.Connections.OrderBy(o=>o.ConnectionDate).Take(1).Select(s=>s.ConnectionDate).FirstAsync();
+            return lastConnection;
+        }
+
     }
 }

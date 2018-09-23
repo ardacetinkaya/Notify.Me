@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NotifyMe.Services
 {
@@ -13,6 +15,6 @@ namespace NotifyMe.Services
         void LetOutVisitor(string connectionId);
         List<Data.Models.Message> GetUserMessages(string name);
 
-
+        Task<DateTime> GetLastConnection();
     }
 }
