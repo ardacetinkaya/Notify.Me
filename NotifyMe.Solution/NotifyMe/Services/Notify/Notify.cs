@@ -40,6 +40,9 @@ namespace NotifyMe.Services
             var response = Context.GetHttpContext().Response;
             var fromUrl = response.Headers["Access-Control-Allow-Origin"];
             var isHostConnected = false;
+            var key = Context.GetHttpContext().Request.Query["key"];
+            _logger.LogInformation($"Access Key={key}");
+            //TODO: Check url and access key matching
             if (string.IsNullOrEmpty(name))
             {
                 lock (_syncLock)

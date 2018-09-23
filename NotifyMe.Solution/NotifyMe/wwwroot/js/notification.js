@@ -3,8 +3,8 @@ $(document).ready(function () {
     tinymce.init({
         selector: 'textarea',
         plugins: [
-            "advcode advlist anchor autolink codesample colorpicker contextmenu image imagetools",
-            " lists link linkchecker media mediaembed noneditable powerpaste preview",
+            "advlist anchor autolink codesample colorpicker contextmenu image imagetools",
+            " lists link media noneditable preview",
             " table template textcolor wordcount"
           ]
     });

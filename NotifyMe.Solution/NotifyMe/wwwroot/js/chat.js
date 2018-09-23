@@ -1,6 +1,6 @@
 ﻿"use strict";
 const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/Ntfctn")
+    .withUrl("/Ntfctn?KEY=321")
     .configureLogging(signalR.LogLevel.Information)
     .build();
 connection.serverTimeoutInMilliseconds = 300000;

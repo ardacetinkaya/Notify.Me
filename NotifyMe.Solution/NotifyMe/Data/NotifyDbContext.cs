@@ -23,5 +23,6 @@ namespace NotifyMe.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Connection> Connections { get; set; }
         public DbSet<Message> Message { get; set; }
+        public DbSet<ApplicationFeature> ApplicationFeatures { get; set; }
     }
 }

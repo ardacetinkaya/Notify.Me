@@ -41,4 +41,11 @@ namespace NotifyMe.Data.Models
         public string Type { get; set; }
         public DateTime Date { get; set; }
     }
+
+    public class ApplicationFeature
+    {
+        public int Id { get; set; }
+        public string Key { get; set; }
+        public string URL { get; set; }
+    }
 }
