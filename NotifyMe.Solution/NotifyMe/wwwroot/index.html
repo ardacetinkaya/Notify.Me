@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/chat.css">
+
+</head>
+
+<body>
+
+    <div id="container" style="width: 400px;">
+        <chat ref="box" access-key="d5DKZeomcebBrIQAKKXd79n4njerHaLRK"></chat>
+    </div>
+    <script src="lib/signalr/signalr.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="js/component.js"></script>
+    <script>
+        var component = new Vue({
+            el: '#container'
+        });
+    </script>
+</body>
+
+</html>
