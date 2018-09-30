@@ -92,7 +92,8 @@ namespace NotifyMe.Services
                     await SendWelcomeMessage(new ChatMessage()
                     {
                         Message = "How can I help you?",
-                        Username = _configuration["HostUser:Name"]
+                        Username = _configuration["HostUser:Name"],
+                        FriendlyUsername = _configuration["HostUser:Name"],
                     });
                 }
 
@@ -115,7 +116,7 @@ namespace NotifyMe.Services
         }
         public async Task SendWelcomeMessage(ChatMessage message)
         {
-            var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message);
+            var messageContainer = CreateMessage(MessageType.Chat, message);
             await Clients.Caller.SendAsync("ReceiveMessage", message.Username, messageContainer);
         }
         public async Task SendPrivateMessage(ChatMessage message)
@@ -150,7 +151,7 @@ namespace NotifyMe.Services
                 receiverConnections.Add(currentConnection.ConnectionID);
 
 
-                var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message, receiver);
+                var messageContainer = CreateMessage(MessageType.Chat, message, receiver);
 
                 if (!string.IsNullOrEmpty(receiver))
                 {
@@ -182,7 +183,7 @@ namespace NotifyMe.Services
             if (message != null)
             {
                 message.Date = DateTimeOffset.Now;
-                var messageContainer = CreateMessage(MessageType.Notification, _configuration["HostUser:Name"], message.Message);
+                var messageContainer = CreateMessage(MessageType.Notification, message);
 
                 var notificationMessage = new Message()
                 {
@@ -202,44 +203,57 @@ namespace NotifyMe.Services
             }
         }
 
-
-
-        private string CreateMessage(MessageType type, string from, string message, string to = "", string title = "", string link = "")
+        private string CreateMessage(MessageType type, BaseMessage message, string to = "")
         {
+
             var messageContainer = string.Empty;
             switch (type)
             {
                 case MessageType.Chat:
-                    var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
 
-                    if (from == _configuration["HostUser:Name"])
+
+                    var image = "http://placehold.it/50/FA6F57/fff&text=WU";//Some custom image for WebUser
+                    var chatMessage = message as ChatMessage;
+
+                    if (chatMessage.Username == _configuration["HostUser:Name"])
                     {
                         image = _configuration["HostUser:Image"];
                         if (!string.IsNullOrEmpty(to))
-                            from = $"{from} -> {to}";
+                            chatMessage.FriendlyUsername = $"{chatMessage.Username} -> {to}";
+
                     }
-                    messageContainer = _message.CreateMessage("Base Chat", message, from, image);
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(chatMessage.FriendlyUsername))
+                            image = $"http://placehold.it/50/FA6F57/fff&text={chatMessage.FriendlyUsername.Substring(0, 1)}";
+                        else
+                            chatMessage.FriendlyUsername = chatMessage.Username;
+                    }
+
+                    messageContainer = _message.CreateMessage("Base Chat", chatMessage.Message, chatMessage.Username, chatMessage.FriendlyUsername, image);
                     break;
 
                 case MessageType.Notification:
-                    messageContainer = _message.CreateMessage("Base Notification", message, from, "");
+                    var notificationMessage = message as NotificationMessage;
+                    messageContainer = _message.CreateMessage("Base Notification", notificationMessage.Message, notificationMessage.Username, string.Empty, string.Empty);
 
                     var messageLink = string.Empty;
-                    if (!string.IsNullOrEmpty(link))
+                    if (!string.IsNullOrEmpty(notificationMessage.Link))
                     {
-                        messageLink = $"<a type='button' class='btn btn-primary' hrep='{link}'>Go<i class='fa fa-diamond ml-1'></i></a>";
+                        messageLink = $"<a type='button' class='btn btn-primary' hrep='{notificationMessage.Link}'>Go<i class='fa fa-diamond ml-1'></i></a>";
                     }
                     messageContainer = string.Format(messageContainer,
-                        title,
-                        message,
+                        notificationMessage.Title,
+                        notificationMessage.Message,
                         messageLink);
                     break;
                 default:
                     break;
             }
             return messageContainer;
-
         }
+
+
     }
 
 }

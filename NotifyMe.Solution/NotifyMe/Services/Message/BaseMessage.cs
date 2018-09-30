@@ -5,6 +5,9 @@ namespace NotifyMe.Services
 {
     public class BaseMessage
     {
+        [JsonProperty("username")]
+        public string Username { get; set; }
+        
         [JsonProperty("message")]
         public string Message { get; set; }
 

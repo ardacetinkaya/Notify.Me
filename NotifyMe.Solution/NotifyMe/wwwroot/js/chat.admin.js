@@ -1,7 +1,10 @@
 $(document).ready(function () {
     $('#messagesList').on('click', 'li', function () {
-        $("#txtmessage").val('@' + $(this).find("strong").html() + ': ');
-        $("#txtmessage").focus();
+        console.log(this);
+        var user = $(this).find("img").attr("alt");
+        $("#txtmessage").val("@"+user+": ");
+        // $("#txtmessage").val('@' + $(this).find("img").attr("alt") + ': ');
+        // $("#txtmessage").focus();
     });
 
     tinymce.init({

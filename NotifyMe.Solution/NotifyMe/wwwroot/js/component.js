@@ -14,7 +14,7 @@ Vue.component('chat', {
                             <div class="chatlay">
                                 <div class="content">
                                     <p class="radius"><img src="./images/chat-support.png" width="70px" style="display:inline" /></p>
-                                    <input id="txtusername" type="text" v-on:keyup.enter="letsstart" placeholder="What's your name?"></input><br />
+                                    <input id="txtusername" type="text" v-on:keyup.enter="letsstart" maxlength="10" placeholder="What's your name?"></input><br />
                                     <button @click.prevent="letsstart" class="btn btn-info btn-sm" id="btnchatstart">Let's start...</button><br />
                                 </div>
                             </div>
@@ -25,7 +25,8 @@ Vue.component('chat', {
                             </div>
                             <div class="panel-footer">
                                 <div>
-                                    <input class="form-control input-sm" type="hidden" value="visitor" id="txtuser" placeholder='Type your nick here...' />
+                                    <input class="form-control input-sm" type="hidden" value="visitor" id="txtuser"/>
+                                    <input class="form-control input-sm" type="hidden" value="" id="txtfriendlyname"/>
                                     <input id="txtmessage" v-on:keyup.enter="sendMessage" maxlength="250" type="text" class="form-control input-sm" placeholder="Type your message here..." />
                                     <span class="input-group-btn" style="text-align:right;padding-top:5px">
                                         <button @click.prevent="sendMessage"  class="btn btn-info btn-sm" id="btnsendmessage">
@@ -99,7 +100,7 @@ Vue.component('chat', {
             self.connection.start().then(() => {
                 console.log("Component is connected");
                 var username = $("#txtusername").val();
-                $("#txtuser").val(username);
+                $("#txtfriendlyname").val(username);
             }).catch(err => {
                 console.log(err);
                 $(".chatlay").show();
@@ -109,12 +110,15 @@ Vue.component('chat', {
             try {
                 var self = this;
                 var user = $("#txtuser").val();
+                var friendlyUname =$("#txtfriendlyname").val();
+                console.log(friendlyUname);
                 var messageText = $("#txtmessage").val();
                 $("#txtmessage").val('');
                 var elem = $("chatcontent");
                 elem.scrollTop += 1000;
                 var privateMessage = {
                     username: user,
+                    friendlyusername:friendlyUname,
                     message: messageText
                 }
                 if (messageText) {

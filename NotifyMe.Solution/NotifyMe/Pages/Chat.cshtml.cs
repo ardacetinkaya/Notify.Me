@@ -50,6 +50,7 @@ namespace NotifyMe.Pages
                     var messageString = _templateService.GetTemplate("Base Chat")
                                                         .Create(message.Content
                                                             , message.FromUser
+                                                            , string.Empty
                                                             , "http://placehold.it/50/FA6F57/fff&text=WU"
                                                             , message.Date
                                                             , message.ToUser);
