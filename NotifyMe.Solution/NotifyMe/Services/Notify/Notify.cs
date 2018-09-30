@@ -51,8 +51,7 @@ namespace NotifyMe.Services
 
                 if (!_visitor.HasVisitorAccess(fromUrl, key))
                 {
-                    _logger.LogInformation("No access");
-                    return;
+                    throw new HubException("Invalid access key for the origin. Please check your access key");
                 }
 
 
@@ -103,6 +102,7 @@ namespace NotifyMe.Services
             {
 
                 _logger.LogError(ex, $"Connection failed: {ex.Message}");
+                throw ex;
             }
 
         }
@@ -172,7 +172,7 @@ namespace NotifyMe.Services
             }
             catch (System.Exception ex)
             {
-                _logger.LogError(ex,$"Can not sent message: {ex.Message}");
+                _logger.LogError(ex, $"Can not sent message: {ex.Message}");
             }
         }
 

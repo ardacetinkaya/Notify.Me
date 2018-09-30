@@ -9,7 +9,15 @@ Vue.component('chat', {
                                 <span id="onlinehost"></span>
                             </div>
                         </div>
-                        <div class="panel-collapse collapse in" id="collapseOne">
+                        
+                        <div class="panel-collapse collapse in chatparent" id="collapseOne">
+                            <div class="chatlay">
+                                <div class="content">
+                                    <p class="radius"><img src="./images/chat-support.png" width="70px" style="display:inline" /></p>
+                                    <input id="txtusername" type="text" v-on:keyup.enter="letsstart" placeholder="What's your name?"></input><br />
+                                    <button @click.prevent="letsstart" class="btn btn-info btn-sm" id="btnchatstart">Let's start...</button><br />
+                                </div>
+                            </div>
                             <div class="panel-body" id="chatcontent" style="height:250px;overflow-y:scroll">
                                 <ul id="messagesList" class="chat" v-for="item in items" >
                                     <li class="left clearfix" v-html="item"></li>
@@ -17,7 +25,7 @@ Vue.component('chat', {
                             </div>
                             <div class="panel-footer">
                                 <div>
-                                    <input class="form-control input-sm" type="text" value="visitor" id="txtuser" placeholder='Type your nick here...' />
+                                    <input class="form-control input-sm" type="hidden" value="visitor" id="txtuser" placeholder='Type your nick here...' />
                                     <input id="txtmessage" v-on:keyup.enter="sendMessage" maxlength="250" type="text" class="form-control input-sm" placeholder="Type your message here..." />
                                     <span class="input-group-btn" style="text-align:right;padding-top:5px">
                                         <button @click.prevent="sendMessage"  class="btn btn-info btn-sm" id="btnsendmessage">
@@ -29,7 +37,7 @@ Vue.component('chat', {
                         </div>
                     </div>
                 </div>`,
-    props: ["accessKey"],
+    props: ["accessKey", "warning"],
     data: function () {
         return {
             connecition: null,
@@ -39,32 +47,30 @@ Vue.component('chat', {
         };
     },
     created: function () {
-        //TODO: Check this with server side license check.
-        if (this.accessKey != '5DKZeomcebBrIQAKKXd79n4njerHaLRK') {
-            console.error("Invalid key for component.");
-            return;
-        } else {
-            this.licensed = true;
-            console.log("Component is created.Please wait for connection.");
-            console.log("Connecting...");
 
-            this.connection = new signalR.HubConnectionBuilder()
-                .withUrl("/Ntfctn?key=" + this.accessKey)
-                .configureLogging(signalR.LogLevel.Information)
-                .build();
+        this.licensed = true;
+        console.log("Component is created.Please wait for connection.");
+        console.log("Connecting...");
 
-            this.connection.serverTimeoutInMilliseconds = 300000;
-        }
+        this.connection = new signalR.HubConnectionBuilder()
+            .withUrl("/Ntfctn?key=" + this.accessKey)
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        this.connection.serverTimeoutInMilliseconds = 300000;
+
 
     },
     mounted: function () {
         var self = this;
         if (this.licensed) {
             self.connection.onclose(function () {
+                $(".chatlay").show();
                 console.log('Connecition is closed');
             });
             self.connection.on("GiveName", function (name) {
-                $("#txtuser").val(name)
+                $("#txtuser").val(name);
+                $(".chatlay").hide();
 
             });
             self.connection.on("SayHello", function (name) {
@@ -83,15 +89,25 @@ Vue.component('chat', {
 
             });
 
-            self.connection.start().catch(err => console.error(err));
-            console.log("Component is connected");
+
         }
     },
     methods: {
+        letsstart: function () {
+            var self = this;
+            var isconnected = false;
+            self.connection.start().then(() => {
+                console.log("Component is connected");
+                var username = $("#txtusername").val();
+                $("#txtuser").val(username);
+            }).catch(err => {
+                console.log(err);
+                $(".chatlay").show();
+            });
+        },
         sendMessage: function () {
             try {
                 var self = this;
-
                 var user = $("#txtuser").val();
                 var messageText = $("#txtmessage").val();
                 $("#txtmessage").val('');

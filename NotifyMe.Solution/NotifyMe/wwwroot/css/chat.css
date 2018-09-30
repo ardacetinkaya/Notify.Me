@@ -12,37 +12,37 @@
 .chat-img .img-circle {
     width: 100%;
 }
-.chat-header.offline
-{
-    color:gray;
+
+.chat-header.offline {
+    color: gray;
 }
-.chat-header.offline img
-{
-    border:2px gray solid;
+
+.chat-header.offline img {
+    border: 2px gray solid;
 }
-.chat-header.online
-{
-    color:green;
+
+.chat-header.online {
+    color: green;
 }
-.chat-header.online img
-{
-    border:2px green solid;
+
+.chat-header.online img {
+    border: 2px green solid;
 }
-.chat-header.busy
-{
-    color:red;
+
+.chat-header.busy {
+    color: red;
 }
-.chat-header.busy img
-{
-    border:2px red solid;
+
+.chat-header.busy img {
+    border: 2px red solid;
 }
-.chat-header.away
-{
-    color:orange;
+
+.chat-header.away {
+    color: orange;
 }
-.chat-header.away img
-{
-    border:2px orange solid;
+
+.chat-header.away img {
+    border: 2px orange solid;
 }
 
 .chat li {
@@ -64,3 +64,46 @@
     color: #777777;
     word-wrap: break-word;
 }
+
+.chatparent {
+    position: relative;
+}
+
+.chatlay {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    cursor: pointer;
+}
+
+.chatlay .content {
+    padding-top: 120px;
+    text-align: center;
+}
+
+.chatlay .content input {
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+.chatlay .radius {
+    margin: 10px;
+    border-radius: 50%;
+    background: #fff;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.chatlay .radius img {
+    display: inline;
+}
+
+.chatlay label { font-size: 12px;}
