@@ -111,7 +111,6 @@ Vue.component('chat', {
                 var self = this;
                 var user = $("#txtuser").val();
                 var friendlyUname =$("#txtfriendlyname").val();
-                console.log(friendlyUname);
                 var messageText = $("#txtmessage").val();
                 $("#txtmessage").val('');
                 var elem = $("chatcontent");
@@ -133,7 +132,6 @@ Vue.component('chat', {
         addMessage: function (test) {
             var self = this;
             self.items.push(test);
-            console.log("Component's addMessage is fired.");
         }
 
     }
