@@ -34,12 +34,23 @@ namespace NotifyMe.Services
 
         public List<NotifyMe.Data.Models.Connection> GetVisitors(int start, int length = 10)
         {
-            var connections = _db.Connections.Include(i => i.User)
-                                    .OrderByDescending(o => o.Connected).ThenByDescending(d => d.ConnectionDate)
-                                    .Skip(start)
-                                    .Take(length).ToList();
+            try
+            {
+                var connections = _db.Connections.Include(i => i.User)
+                        .OrderByDescending(o => o.Connected).ThenByDescending(d => d.ConnectionDate)
+                        .Skip(start)
+                        .Take(length).ToList();
 
-            return connections;
+                return connections;
+            }
+            catch (System.Exception ex)
+            {
+
+                _logger.LogError(ex,ex.Message);
+            }
+
+            return new List<NotifyMe.Data.Models.Connection>();
+
 
         }
 
@@ -62,37 +73,54 @@ namespace NotifyMe.Services
 
         public void LetInVisitor(string connectionId, string name = "", string url = "")
         {
-            var user = _db.Users.Where(u => u.UserName == name).FirstOrDefault();
-
-            var connection = new Connection()
+            try
             {
-                ConnectionID = connectionId,
-                UserAgent = url,
-                Connected = true,
-                ConnectionDate = DateTime.Now,
-                User = user ?? new User() { UserName = name }
-            };
+                var user = _db.Users.Where(u => u.UserName == name).FirstOrDefault();
 
-            _db.Connections.Add(connection);
+                var connection = new Connection()
+                {
+                    ConnectionID = connectionId,
+                    UserAgent = url,
+                    Connected = true,
+                    ConnectionDate = DateTime.Now,
+                    User = user ?? new User() { UserName = name }
+                };
 
-            _db.SaveChanges();
+                _db.Connections.Add(connection);
+
+                _db.SaveChanges();
+            }
+            catch (System.Exception ex)
+            {
+
+                _logger.LogError(ex, ex.Message);
+            }
+
 
         }
 
         public void LetOutVisitor(string connectionId)
         {
-            if (!string.IsNullOrEmpty(connectionId))
+            try
             {
-                var connection = _db.Connections.Where(c => c.ConnectionID == connectionId).FirstOrDefault();
-                if (connection != null)
+                if (!string.IsNullOrEmpty(connectionId))
                 {
-                    connection.Connected = false;
-                    connection.DisconnectionDate = DateTime.Now;
-                    _db.Connections.Update(connection);
-                    _db.SaveChanges();
+                    var connection = _db.Connections.Where(c => c.ConnectionID == connectionId).FirstOrDefault();
+                    if (connection != null)
+                    {
+                        connection.Connected = false;
+                        connection.DisconnectionDate = DateTime.Now;
+                        _db.Connections.Update(connection);
+                        _db.SaveChanges();
 
+                    }
                 }
             }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+
         }
 
         public List<Message> GetUserMessages(string name)

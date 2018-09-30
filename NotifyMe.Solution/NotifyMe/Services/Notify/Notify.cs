@@ -8,6 +8,7 @@ using NotifyMe.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NotifyMe.Services
@@ -15,7 +16,10 @@ namespace NotifyMe.Services
     public class Notify : Hub
     {
         private static readonly Random _random = new Random(10);
-        private static readonly object _syncLock = new object();
+
+        private readonly object _syncObject = new object();
+        private const int _timeoutWait = 1000; // milliseconds
+
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
         private readonly NotifyDbContext _db;
@@ -36,50 +40,71 @@ namespace NotifyMe.Services
 
         public override async Task OnConnectedAsync()
         {
-            var name = Context.User.Identity.Name;
-            var response = Context.GetHttpContext().Response;
-            var fromUrl = response.Headers["Access-Control-Allow-Origin"];
-            var isHostConnected = false;
-            var key = Context.GetHttpContext().Request.Query["key"];
-            _logger.LogInformation($"Access Key={key}");
-
-            if (!_visitor.HasVisitorAccess(fromUrl, key))
+            try
             {
-                _logger.LogInformation("No access");
-                return;
-            }
-            
+                var name = Context.User.Identity.Name;
+                var response = Context.GetHttpContext().Response;
+                var fromUrl = response.Headers["Access-Control-Allow-Origin"];
+                var isHostConnected = false;
+                var key = Context.GetHttpContext().Request.Query["key"];
+                _logger.LogInformation($"Access Key={key}");
 
-            if (string.IsNullOrEmpty(name))
-            {
-                lock (_syncLock)
+                if (!_visitor.HasVisitorAccess(fromUrl, key))
                 {
-                    var userId = _random.Next(0, 10);
-                    name = $"WebUser{userId.ToString()}";
+                    _logger.LogInformation("No access");
+                    return;
                 }
-            }
-            else
-            {
-                name = _configuration["HostUser:Name"];
-                await Clients.All.SendAsync("SayHello", "online");
-                isHostConnected = true;
 
-            }
-            _visitor.LetInVisitor(Context.ConnectionId ?? Guid.NewGuid().ToString(), name, fromUrl);
 
-            _logger.LogInformation($"{name} is connected.");
-
-            await Clients.Caller.SendAsync("GiveName", name);
-            if (!isHostConnected)
-            {
-                await SendWelcomeMessage(new ChatMessage()
+                if (string.IsNullOrEmpty(name))
                 {
-                    Message = "How can I help you?",
-                    Username = _configuration["HostUser:Name"]
-                });
+                    //Monitor usage example
+                    if (Monitor.TryEnter(_syncObject, _timeoutWait))
+                    {
+                        try
+                        {
+                            var userId = _random.Next(0, 10);
+                            name = $"WebUser{userId.ToString()}";
+                        }
+                        finally
+                        {
+                            Monitor.Exit(_syncObject);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Can not assign name");
+                    }
+                }
+                else
+                {
+                    name = _configuration["HostUser:Name"];
+                    await Clients.All.SendAsync("SayHello", "online");
+                    isHostConnected = true;
+
+                }
+                _visitor.LetInVisitor(Context.ConnectionId ?? Guid.NewGuid().ToString(), name, fromUrl);
+
+                _logger.LogInformation($"{name} is connected.");
+
+                await Clients.Caller.SendAsync("GiveName", name);
+                if (!isHostConnected)
+                {
+                    await SendWelcomeMessage(new ChatMessage()
+                    {
+                        Message = "How can I help you?",
+                        Username = _configuration["HostUser:Name"]
+                    });
+                }
+
+                await base.OnConnectedAsync();
+            }
+            catch (System.Exception ex)
+            {
+
+                _logger.LogError(ex, $"Connection failed: {ex.Message}");
             }
 
-            await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -95,52 +120,59 @@ namespace NotifyMe.Services
         }
         public async Task SendPrivateMessage(ChatMessage message)
         {
-            if (string.IsNullOrEmpty(message.Message)) return;
-
-            var receiver = string.Empty;
-            message.Date = DateTimeOffset.Now;
-            if (message.Message.StartsWith('@'))
+            try
             {
-                var index = message.Message.IndexOf(":");
-                receiver = message.Message.Substring(0, index + 1).TrimStart('@').TrimEnd(':');
-                message.Message = message.Message.Substring(index + 1);
-            }
-            else
-            {
-                receiver = _configuration["HostUser:Name"];
-            }
+                if (string.IsNullOrEmpty(message.Message)) return;
 
-            var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
-            var receiverConnections = new List<string>();
-
-            var receiverUser = _db.Users.Where(u => u.UserName == receiver).Select(u => u.Id).ToList();
-
-            if (receiverUser != null)
-            {
-                receiverConnections.AddRange(_db.Connections.Where(c => receiverUser.Contains(c.UserId) && c.Connected)
-                    .Select(s => s.ConnectionID).ToList());
-            }
-            receiverConnections.Add(currentConnection.ConnectionID);
-
-
-            var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message, receiver);
-
-            if (!string.IsNullOrEmpty(receiver))
-            {
-                var result = _message.SaveMessage(Context.ConnectionId, new Message()
+                var receiver = string.Empty;
+                message.Date = DateTimeOffset.Now;
+                if (message.Message.StartsWith('@'))
                 {
-                    Content = message.Message,
-                    RawContent = JsonConvert.SerializeObject(message),
-                    ToUser = receiver,
-                    FromUser = message.Username,
-                    Date = message.Date.DateTime,
-                    Type = MessageType.Chat.ToString()
-                });
-                if (result)
-                {
-                    var readOnly = receiverConnections.AsReadOnly();
-                    await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username, messageContainer);
+                    var index = message.Message.IndexOf(":");
+                    receiver = message.Message.Substring(0, index + 1).TrimStart('@').TrimEnd(':');
+                    message.Message = message.Message.Substring(index + 1);
                 }
+                else
+                {
+                    receiver = _configuration["HostUser:Name"];
+                }
+
+                var currentConnection = _db.Connections.Where(c => c.ConnectionID == Context.ConnectionId).FirstOrDefault();
+                var receiverConnections = new List<string>();
+
+                var receiverUser = _db.Users.Where(u => u.UserName == receiver).Select(u => u.Id).ToList();
+
+                if (receiverUser != null)
+                {
+                    receiverConnections.AddRange(_db.Connections.Where(c => receiverUser.Contains(c.UserId) && c.Connected)
+                        .Select(s => s.ConnectionID).ToList());
+                }
+                receiverConnections.Add(currentConnection.ConnectionID);
+
+
+                var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message, receiver);
+
+                if (!string.IsNullOrEmpty(receiver))
+                {
+                    var result = _message.SaveMessage(Context.ConnectionId, new Message()
+                    {
+                        Content = message.Message,
+                        RawContent = JsonConvert.SerializeObject(message),
+                        ToUser = receiver,
+                        FromUser = message.Username,
+                        Date = message.Date.DateTime,
+                        Type = MessageType.Chat.ToString()
+                    });
+                    if (result)
+                    {
+                        var readOnly = receiverConnections.AsReadOnly();
+                        await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username, messageContainer);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex,$"Can not sent message: {ex.Message}");
             }
         }
 
