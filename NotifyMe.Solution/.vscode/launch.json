@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/NotifyMe/bin/Debug/netcoreapp2.1/NotifyMe.dll",
+            "program": "${workspaceFolder}/NotifyMe/bin/Debug/netcoreapp2.2/NotifyMe.dll",
             "args": [],
             "cwd": "${workspaceFolder}/NotifyMe",
             "stopAtEntry": false,

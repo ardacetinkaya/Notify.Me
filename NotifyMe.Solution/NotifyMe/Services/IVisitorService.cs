@@ -14,7 +14,7 @@ namespace NotifyMe.Services
         void LetInVisitor(string connectionId, string name = "", string url = "");
         void LetOutVisitor(string connectionId);
         List<Data.Models.Message> GetUserMessages(string name);
-
+        bool HasVisitorAccess(string host, string key);
         Task<DateTime> GetLastConnection();
     }
 }

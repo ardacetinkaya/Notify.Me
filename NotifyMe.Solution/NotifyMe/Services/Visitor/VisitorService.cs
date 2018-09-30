@@ -43,6 +43,23 @@ namespace NotifyMe.Services
 
         }
 
+        public bool HasVisitorAccess(string host, string key)
+        {
+            try
+            {
+                var hasAccess = _db.ApplicationFeatures.Where(h => h.URL.Equals(host) && h.Key.Equals(key)).FirstOrDefault();
+                if (hasAccess != null) return true;
+            }
+            catch (System.Exception ex)
+            {
+
+                _logger.LogError(ex, ex.Message);
+            }
+
+
+            return false;
+        }
+
         public void LetInVisitor(string connectionId, string name = "", string url = "")
         {
             var user = _db.Users.Where(u => u.UserName == name).FirstOrDefault();
@@ -82,7 +99,7 @@ namespace NotifyMe.Services
         {
             try
             {
-                var messages = _db.Message.Where(u => u.FromUser == name || u.ToUser==name).ToList();
+                var messages = _db.Message.Where(u => u.FromUser == name || u.ToUser == name).ToList();
                 return messages;
             }
             catch (System.Exception ex)
@@ -93,9 +110,9 @@ namespace NotifyMe.Services
             return new List<Message>();
         }
 
-        async Task<DateTime>  IVisitorService.GetLastConnection()
+        async Task<DateTime> IVisitorService.GetLastConnection()
         {
-            DateTime lastConnection = await _db.Connections.OrderBy(o=>o.ConnectionDate).Take(1).Select(s=>s.ConnectionDate).FirstAsync();
+            DateTime lastConnection = await _db.Connections.OrderBy(o => o.ConnectionDate).Take(1).Select(s => s.ConnectionDate).FirstAsync();
             return lastConnection;
         }
 

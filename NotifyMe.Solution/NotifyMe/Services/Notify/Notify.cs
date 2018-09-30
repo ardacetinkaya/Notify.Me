@@ -42,7 +42,14 @@ namespace NotifyMe.Services
             var isHostConnected = false;
             var key = Context.GetHttpContext().Request.Query["key"];
             _logger.LogInformation($"Access Key={key}");
-            //TODO: Check url and access key matching
+
+            if (!_visitor.HasVisitorAccess(fromUrl, key))
+            {
+                _logger.LogInformation("No access");
+                return;
+            }
+            
+
             if (string.IsNullOrEmpty(name))
             {
                 lock (_syncLock)
@@ -83,7 +90,7 @@ namespace NotifyMe.Services
         }
         public async Task SendWelcomeMessage(ChatMessage message)
         {
-            var messageContainer = CreateMessage(MessageType.Chat,message.Username,message.Message);
+            var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message);
             await Clients.Caller.SendAsync("ReceiveMessage", message.Username, messageContainer);
         }
         public async Task SendPrivateMessage(ChatMessage message)
@@ -115,7 +122,7 @@ namespace NotifyMe.Services
             }
             receiverConnections.Add(currentConnection.ConnectionID);
 
-            
+
             var messageContainer = CreateMessage(MessageType.Chat, message.Username, message.Message, receiver);
 
             if (!string.IsNullOrEmpty(receiver))
@@ -176,7 +183,7 @@ namespace NotifyMe.Services
                     if (from == _configuration["HostUser:Name"])
                     {
                         image = _configuration["HostUser:Image"];
-                        if(!string.IsNullOrEmpty(to))
+                        if (!string.IsNullOrEmpty(to))
                             from = $"{from} -> {to}";
                     }
                     messageContainer = _message.CreateMessage("Base Chat", message, from, image);
@@ -184,7 +191,7 @@ namespace NotifyMe.Services
 
                 case MessageType.Notification:
                     messageContainer = _message.CreateMessage("Base Notification", message, from, "");
-                    
+
                     var messageLink = string.Empty;
                     if (!string.IsNullOrEmpty(link))
                     {
