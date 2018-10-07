@@ -11,7 +11,7 @@ using NotifyMe.Services;
 namespace NotifyMe.Pages
 {
     [Authorize]
-    public class Users : PageModel
+    public class Users : BasePage
     {
         private IVisitorService _visitors;
         public Users(IServiceProvider provider, IConfiguration configuration)

@@ -35,9 +35,7 @@ namespace NotifyMe.Services
             _visitor = (IVisitorService)_serviceProvider.GetService(typeof(IVisitorService));
             _message = (IMessageService)_serviceProvider.GetService(typeof(IMessageService));
             _logger = logger;
-
         }
-
         public override async Task OnConnectedAsync()
         {
             try
@@ -83,8 +81,11 @@ namespace NotifyMe.Services
 
                 }
                 _visitor.LetInVisitor(Context.ConnectionId ?? Guid.NewGuid().ToString(), name, fromUrl);
+                _logger.LogDebug($"{name} is connected.");
 
-                _logger.LogInformation($"{name} is connected.");
+                var host = _db.Connections.Where(c => c.User.UserName == _configuration["HostUser:Name"] && c.Connected)
+                                        .OrderByDescending(c => c.ConnectionDate)
+                                        .FirstOrDefault();
 
                 await Clients.Caller.SendAsync("GiveName", name);
                 if (!isHostConnected)
@@ -96,28 +97,54 @@ namespace NotifyMe.Services
                         FriendlyUsername = _configuration["HostUser:Name"],
                     });
                 }
-
+                
+                if (host != null)
+                {
+                    _logger.LogDebug($"Host{ host.ConnectionID} is already connected. Informing host...");
+                    await Clients.Client(host.ConnectionID).SendAsync("iamin", name);
+                }
                 await base.OnConnectedAsync();
             }
             catch (System.Exception ex)
             {
-
                 _logger.LogError(ex, $"Connection failed: {ex.Message}");
                 throw ex;
             }
 
         }
-
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            _visitor.LetOutVisitor(Context.ConnectionId);
-            _logger.LogInformation($"User is disconnected. Detail: {exception?.Message}");
-            await base.OnDisconnectedAsync(exception);
+            try
+            {
+                _visitor.LetOutVisitor(Context.ConnectionId);
+
+                var user = _db.Connections.Where(c => Context.ConnectionId == c.ConnectionID && c.Connected)
+                          .OrderByDescending(c => c.ConnectionDate)
+                          .FirstOrDefault();
+
+                var host = _db.Connections.Where(c => c.User.UserName == _configuration["HostUser:Name"] && c.Connected)
+                                          .OrderByDescending(c => c.ConnectionDate)
+                                          .FirstOrDefault();
+                if (host != null && user != null)
+                {
+                    _logger.LogDebug($"{host.User.UserName}({host.ConnectionID}) is already connected.");
+                    await Clients.Client(host.ConnectionID).SendAsync("iamout", user.User.UserName);
+                    _logger.LogDebug($"{user.User.UserName} is disconnected. Detail: {exception?.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpected error is occured {ex.Message}");
+            }
+            finally
+            {
+                await base.OnDisconnectedAsync(exception);
+            }
         }
         public async Task SendWelcomeMessage(ChatMessage message)
         {
             var messageContainer = CreateMessage(MessageType.Chat, message);
-            await Clients.Caller.SendAsync("ReceiveMessage", message.Username, messageContainer);
+            await Clients.Caller.SendAsync("ReceiveMessage", message.Username,"", messageContainer);
         }
         public async Task SendPrivateMessage(ChatMessage message)
         {
@@ -127,10 +154,10 @@ namespace NotifyMe.Services
 
                 var receiver = string.Empty;
                 message.Date = DateTimeOffset.Now;
-                if (message.Message.StartsWith('@'))
+                if (message.Message.StartsWith('#'))
                 {
                     var index = message.Message.IndexOf(":");
-                    receiver = message.Message.Substring(0, index + 1).TrimStart('@').TrimEnd(':');
+                    receiver = message.Message.Substring(0, index + 1).TrimStart('#').TrimEnd(':');
                     message.Message = message.Message.Substring(index + 1);
                 }
                 else
@@ -150,7 +177,6 @@ namespace NotifyMe.Services
                 }
                 receiverConnections.Add(currentConnection.ConnectionID);
 
-
                 var messageContainer = CreateMessage(MessageType.Chat, message, receiver);
 
                 if (!string.IsNullOrEmpty(receiver))
@@ -167,7 +193,7 @@ namespace NotifyMe.Services
                     if (result)
                     {
                         var readOnly = receiverConnections.AsReadOnly();
-                        await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username, messageContainer);
+                        await Clients.Clients(readOnly).SendAsync("ReceiveMessage", message.Username,receiver, messageContainer);
                     }
                 }
             }
@@ -252,7 +278,6 @@ namespace NotifyMe.Services
             }
             return messageContainer;
         }
-
 
     }
 

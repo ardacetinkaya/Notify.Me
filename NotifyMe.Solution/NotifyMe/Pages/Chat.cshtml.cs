@@ -13,7 +13,7 @@ using NotifyMe.Services;
 namespace NotifyMe.Pages
 {
     [Authorize]
-    public class Chat : PageModel
+    public class Chat : BasePage
     {
         private readonly IVisitorService _visitors;
         private readonly ITemplateService _templateService;

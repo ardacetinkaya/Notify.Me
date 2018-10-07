@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,22 +14,21 @@ using NotifyMe.Services;
 
 namespace NotifyMe.Pages
 {
+
     [Authorize]
-    public class IndexModel : PageModel
+    public class IndexModel : BasePage
     {
 
         private readonly IHubContext<Notify> _hub;
-        public string Message { get; private set; }
 
-        public IndexModel(IHubContext<Notify> hub,IServiceProvider provider, IConfiguration configuration)
+
+        public IndexModel(IHubContext<Notify> hub, IServiceProvider provider, IConfiguration configuration)
         {
             _hub = hub;
         }
 
-        public async void OnGetAsync(string status="")
+        public async void OnGetAsync(string status = "")
         {
-            
-            Message = "1";
             if (!string.IsNullOrEmpty(status))
             {
                 var userName = User.Identity.Name;
@@ -38,10 +39,15 @@ namespace NotifyMe.Pages
                 }
 
             }
-
+            ViewData["Version"]=Version;
 
         }
 
-       
+
+
+
+
+
+
     }
 }

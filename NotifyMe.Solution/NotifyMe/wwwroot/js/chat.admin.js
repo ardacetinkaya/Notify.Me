@@ -1,29 +1,20 @@
 $(document).ready(function () {
-    $('#messagesList').on('click', 'li', function () {
-        console.log(this);
-        var user = $(this).find("img").attr("alt");
-        $("#txtmessage").val("@"+user+": ");
-        // $("#txtmessage").val('@' + $(this).find("img").attr("alt") + ': ');
-        // $("#txtmessage").focus();
-    });
-
     tinymce.init({
         selector: 'textarea',
-        plugins: [
-            "advcode advlist anchor autolink codesample colorpicker contextmenu image imagetools",
-            " lists link linkchecker media mediaembed noneditable powerpaste preview",
-            " table template textcolor wordcount"
-        ]
+        plugins:["table"]
+        // plugins: [
+        //     "advcode advlist anchor autolink codesample colorpicker contextmenu image imagetools",
+        //     " lists link linkchecker media mediaembed noneditable powerpaste preview",
+        //     " table template textcolor wordcount"
+        // ]
     });
 });
 
 
 $('#btnhostmessage').on('click', function (event) {
-    $("#txtuser").val()
-    var user = $("#txtuser").val();
+    var user = 'Arda';
     var messageText = $("#txtmessage").val();
     messageText += tinyMCE.activeEditor.getContent();
-    $("#txtmessage").val('');
     var elem = document.getElementById('chatcontent');
     elem.scrollTop += 1000;
     var privateMessage = {
@@ -35,3 +26,4 @@ $('#btnhostmessage').on('click', function (event) {
     }
     event.preventDefault();
 });
+

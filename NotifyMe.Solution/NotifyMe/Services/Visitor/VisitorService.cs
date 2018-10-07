@@ -27,7 +27,8 @@ namespace NotifyMe.Services
 
         public List<User> GetUsers()
         {
-            var users = _db.Users.ToList();
+            var users = _db.Connections.Where(c => c.Connected)
+            .Select(s => s.User).ToList();
 
             return users;
         }
@@ -46,7 +47,7 @@ namespace NotifyMe.Services
             catch (System.Exception ex)
             {
 
-                _logger.LogError(ex,ex.Message);
+                _logger.LogError(ex, ex.Message);
             }
 
             return new List<NotifyMe.Data.Models.Connection>();

@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Log in";
 }
-
 <link rel="stylesheet" type="text/css" href="~/css/util.css">
 <link rel="stylesheet" type="text/css" href="~/css/main.css">
 <link rel="stylesheet" type="text/css" href="~/css/chat.css">
@@ -57,48 +56,20 @@
                 </form>   
             </section>
             <div class="login100-more p-t-150 p-r-40 p-l-40">
-                <div class="panel panel-info ">
-                    <div class="panel-heading" id="accordion">
-                        <div id="chatheader" class="chat-header offline">
-                            <span class="chat-img pull-left\">
-                                <img src="@Model.ImageUrl" style="width: 40px;margin-right: 15px;" alt="User" class="img-circle" />This is @Model.Username 
-                            </span>
-                            <div class="pull-right p-t-10">
-                                <span id="onlinehost">Offline</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-collapse collapse in" id="collapseOne">
-                        <div class="panel-body" id="chatcontent">
-                            <ul id="messagesList" class="chat"></ul>
-                        </div>
-                        <div class="panel-footer">
-                            <div class="input-group">
-                                <input type="hidden" value="visitor" id="txtuser" />
-                                <input id="txtmessage" maxlength="250" type="text" class="form-control input-sm" placeholder="Type your message here..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-info btn-sm" id="btnsendmessage">
-                                        Send
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                <div id="container" style="width: 400px;">
+                    <chat ref="box" access-key="5DKZeomcebBrIQAKKXd79n4njerHaLRK"></chat>
                 </div>
-                
-
             </div>
-
         </div>
     </div>
 </div>
-				<div id="notifypopup"></div>
+<div id="notifypopup"></div>
 @section Scripts {
-        <environment include="Development">
-            <script type="text/javascript" src="~/js/chat.js"></script>
-        </environment>
-        
-        <environment exclude="Development">
-            <script type="text/javascript" src="~/js/chat.min.js"></script>
-        </environment>
+
+            <script src="~/js/component.js"></script>
+            <script>
+                var component = new Vue({
+                        el: '#container'
+                        });
+            </script>
 }

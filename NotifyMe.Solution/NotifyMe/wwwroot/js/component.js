@@ -13,7 +13,7 @@ Vue.component('chat', {
                         <div class="panel-collapse collapse in chatparent" id="collapseOne">
                             <div class="chatlay">
                                 <div class="content">
-                                    <p class="radius"><img src="./images/chat-support.png" width="70px" style="display:inline" /></p>
+                                    <p class="radius"><img src="/images/chat-support.png" width="70px" style="display:inline" /></p>
                                     <input id="txtusername" type="text" v-on:keyup.enter="letsstart" maxlength="10" placeholder="What's your name?"></input><br />
                                     <button @click.prevent="letsstart" class="btn btn-info btn-sm" id="btnchatstart">Let's start...</button><br />
                                 </div>
@@ -77,7 +77,7 @@ Vue.component('chat', {
             self.connection.on("SayHello", function (name) {
                 $("#onlinehost").html(name);
             });
-            self.connection.on("ReceiveMessage", function (user, message) {
+            self.connection.on("ReceiveMessage", function (user,to, message) {
                 try {
                     if (component.$refs.box) {
                         component.$refs.box.addMessage(message);

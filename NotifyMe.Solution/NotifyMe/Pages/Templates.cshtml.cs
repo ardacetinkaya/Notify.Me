@@ -19,7 +19,7 @@ using NotifyMe.Services;
 namespace NotifyMe.Pages
 {
     [Authorize]
-    public class Templates : PageModel
+    public class Templates : BasePage
     {
         private readonly IHostingEnvironment _environment;
         private readonly ITemplateService _templateService;

@@ -14,7 +14,7 @@ using NotifyMe.Services;
 namespace NotifyMe.Pages
 {
     [Authorize]
-    public class Notifications : PageModel
+    public class Notifications : BasePage
     {
 
         private readonly IHubContext<Notify> _hub;
