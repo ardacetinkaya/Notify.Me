@@ -1,15 +1,30 @@
 ﻿@page
 @model IndexModel
-@inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = "Notify.Me";
 }
 
-@section Scripts
-{
+<link rel="stylesheet" type="text/css" href="~/css/util.css">
+<link rel="stylesheet" type="text/css" href="~/css/main.css">
+<link rel="stylesheet" type="text/css" href="~/css/chat.css">
+<div class="limiter" >
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-more">
+                <div id="container" style="width: 400px;">
+                    <chat ref="box" access-key="5DKZeomcebBrIQAKKXd79n4njerHaLRK"></chat>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="notifypopup"></div>
+@section Scripts {
 
+            <script src="~/js/component.js"></script>
+            <script>
+                var component = new Vue({
+                        el: '#container'
+                        });
+            </script>
 }
-
-
-
-

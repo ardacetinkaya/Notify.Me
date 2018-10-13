@@ -51,13 +51,12 @@ label {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  background: #f2f2f2;
+
 }
 
 
 .wrap-login100 {
   width: 100%;
-  background: #fff;
   overflow: hidden;
   display: -webkit-box;
   display: -webkit-flex;
@@ -111,6 +110,7 @@ label {
   border: 1px solid #e6e6e6;
   border-radius: 10px;
   margin-bottom: 10px;
+  background-color: #fff;
 }
 
 .label-input100 {

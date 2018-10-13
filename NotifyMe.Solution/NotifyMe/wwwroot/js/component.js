@@ -1,7 +1,7 @@
 "use strict";
 
 Vue.component('chat', {
-    template: `<div id="content-wrap" style="padding:10px;">
+    template: `<div id="content-wrap" class="boxeffect">
                     <div class="panel panel-primary">
                         <div class="panel-heading" id="accordion">
                             <span class="glyphicon glyphicon-comment"></span> Chat
