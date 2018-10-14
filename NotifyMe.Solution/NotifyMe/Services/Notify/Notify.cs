@@ -16,10 +16,8 @@ namespace NotifyMe.Services
     public class Notify : Hub
     {
         private static readonly Random _random = new Random(10);
-
         private readonly object _syncObject = new object();
         private const int _timeoutWait = 1000; // milliseconds
-
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
         private readonly NotifyDbContext _db;
@@ -45,7 +43,7 @@ namespace NotifyMe.Services
                 var fromUrl = response.Headers["Access-Control-Allow-Origin"];
                 var isHostConnected = false;
                 var key = Context.GetHttpContext().Request.Query["key"];
-                _logger.LogInformation($"Access Key={key}");
+                _logger.LogDebug($"Connecting with Access Key:{key}...");
 
                 if (!_visitor.HasVisitorAccess(fromUrl, key))
                 {
@@ -70,7 +68,7 @@ namespace NotifyMe.Services
                     }
                     else
                     {
-                        _logger.LogInformation("Can not assign name");
+                        _logger.LogDebug("Can not assign name");
                     }
                 }
                 else

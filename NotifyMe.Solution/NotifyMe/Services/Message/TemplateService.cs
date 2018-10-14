@@ -36,11 +36,11 @@ namespace NotifyMe.Services
                 Templates = null;
                 var rootPath = _hosting.ContentRootPath;
                 var path = Path.Combine(rootPath, "Plugins");
-                _logger.LogInformation($"Path is: {path}");
+                _logger.LogDebug($"Path for templates is: {path}");
                 var assemblies = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories)
                             .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath)
                             .ToList();
-                _logger.LogInformation($"Template files: {assemblies.Count.ToString()}");
+                _logger.LogDebug($"# of template files: {assemblies.Count.ToString()}");
                 var pluginContainer = new ContainerConfiguration().WithAssemblies(assemblies);
                 using (var container = pluginContainer.CreateContainer())
                 {

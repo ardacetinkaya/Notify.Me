@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using NotifyMe.Pages;
 
 namespace NotifyMe.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    public class LogoutModel : PageModel
+    public class LogoutModel : BasePage
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LogoutModel> _logger;

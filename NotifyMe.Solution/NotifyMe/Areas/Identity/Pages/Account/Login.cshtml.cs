@@ -11,11 +11,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using NotifyMe.UI.Models;
 using Microsoft.Extensions.Configuration;
+using NotifyMe.Pages;
 
 namespace NotifyMe.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    public class LoginModel : PageModel
+    public class LoginModel : BasePage
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
@@ -42,8 +43,6 @@ namespace NotifyMe.Areas.Identity.Pages.Account
 
         [TempData]
         public string ErrorMessage { get; set; }
-
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
