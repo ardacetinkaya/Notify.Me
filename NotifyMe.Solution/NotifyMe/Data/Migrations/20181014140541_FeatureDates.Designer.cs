@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NotifyMe.Data;
 
 namespace NotifyMe.Migrations
 {
     [DbContext(typeof(NotifyDbContext))]
-    partial class NotifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181014140541_FeatureDates")]
+    partial class FeatureDates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,8 +30,6 @@ namespace NotifyMe.Migrations
                     b.Property<string>("ApplicationUserId");
 
                     b.Property<DateTimeOffset>("CreateDate");
-
-                    b.Property<bool>("IsRevoked");
 
                     b.Property<string>("Key");
 
