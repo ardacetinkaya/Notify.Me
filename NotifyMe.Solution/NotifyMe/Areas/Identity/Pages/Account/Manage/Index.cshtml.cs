@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NotifyMe.Pages;
 
 namespace NotifyMe.Areas.Identity.Pages.Account.Manage
 {
-    public partial class IndexModel : PageModel
+    public partial class IndexModel : BasePage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;

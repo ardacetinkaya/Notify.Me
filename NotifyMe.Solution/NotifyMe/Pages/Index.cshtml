@@ -1,7 +1,72 @@
 ﻿@page
 @model IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = "Notify.Me";
 }
+@section Scripts
+{
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=g4q2s6u0msl84m6htaw4ztm3by25re9sn4eiv07m907wbu6o"></script>
+        <environment include="Development">
+            <script type="text/javascript" src="~/js/chat.js" asp-append-version="true"></script>
+            <script type="text/javascript" src="~/js/chat.admin.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script type="text/javascript" src="~/js/chat.min.js" asp-append-version="true"></script>
+            <script type="text/javascript" src="~/js/chat.admin.min.js" asp-append-version="true"></script>
+            
+         </environment>
+        <script>           
+            $(".arstatus").click(function () {
+                $.ajax({
+                    url: '/',
+                    data: {
+                        status: $(this).data('status')
+                    }
+                })
+            });
+        </script>
+    }
+}
 
 
+<link rel="stylesheet" type="text/css" href="~/css/chat.css">
+@if (SignInManager.IsSignedIn(User))
+{
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+    <div class="container text-left">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-6" role="tabpanel">
+                <div class="col-xs-4 col-sm-12">
+                    <ul class="nav nav-justified" id="nav-tabs" role="tablist">
+                        
+                    </ul>
+                </div>
+                <div class="col-xs-8 col-sm-12">
+                    <div class="tab-content" id="tabs-collapse">            
+                        
+                    </div>
+                </div>        
+            </div>
+        </div>
+    </div>
+    </div>
+        <div class="col-md-6">
+            <div style="margin-top:100px">                                
+                <input id="txtmessage" maxlength="250" disabled type="text" class="form-control input-sm disabled hidden"  />
+                <textarea id="txtusermessage" placeholder="Type your message here..."></textarea>
+                <span class="input-group-btn" style="text-align:right;padding-top:5px">
+                    <button class="btn btn-warning btn-sm text-right p-t-8" id="btnhostmessage">
+                        Send
+                    </button>
+                </span>                               
+            </div>
+        </div>
+    </div>
+</div>
+}

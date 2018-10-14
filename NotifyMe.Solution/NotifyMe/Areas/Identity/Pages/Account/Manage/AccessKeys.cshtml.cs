@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using NotifyMe.Data.Models;
+using NotifyMe.Pages;
 using NotifyMe.Services;
 
 namespace NotifyMe.Areas.Identity.Pages.Account.Manage
 {
-    public class AccessKeys : PageModel
+    public class AccessKeys : BasePage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
