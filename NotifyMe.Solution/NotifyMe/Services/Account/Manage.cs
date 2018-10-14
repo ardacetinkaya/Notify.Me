@@ -31,7 +31,7 @@ namespace NotifyMe.Services
         {
             var s = await _userManager.GetUserAsync(user);
 
-            var features = _db.ApplicationFeatures.Where(f => f.ApplicationUserId == s.Id && f.IsRevoked).ToList();
+            var features = _db.ApplicationFeatures.Where(f => f.ApplicationUserId == s.Id && !f.IsRevoked).ToList();
 
             return features;
         }
@@ -52,6 +52,8 @@ namespace NotifyMe.Services
 
                     var u = await _userManager.GetUserAsync(user);
 
+                    int count = await GetAccessCount(user);
+                    if (count >= 5) throw new InvalidOperationException("Access limit is full.");
 
                     _db.ApplicationFeatures.Add(new ApplicationFeature()
                     {
@@ -74,6 +76,13 @@ namespace NotifyMe.Services
 
         }
 
+        public async Task<int> GetAccessCount(ClaimsPrincipal user)
+        {
+            var u = await _userManager.GetUserAsync(user);
+            var accessCount = _db.ApplicationFeatures.Where(f => f.ApplicationUserId == u.Id
+                                                         && !f.IsRevoked).Count();
+            return accessCount;
+        }
         public async Task<bool> RevokeAccess(int id, ClaimsPrincipal user)
         {
             try
