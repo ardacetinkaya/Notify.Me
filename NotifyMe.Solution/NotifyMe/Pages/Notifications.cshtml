@@ -24,41 +24,26 @@
     </pre>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading" >
-                    <span class="glyphicon glyphicon-comment"></span> Notification Messages
-                    <div class="btn-group pull-right">
-                       
-                    </div>
-                </div>
-                <div class="panel-collapse collapse in">
-                    <div class="panel-body" >
-                        <table id="notificationdata" class="table table-striped table-bordered compact notificationdata">
-                            <thead>
-                                <tr>
-                                    <th>Content</th>
-                                    <th>Date</th>
-                                   
-                                </tr>
-                            </thead>
-                            <tbody>
-                               <tr><td></td><td></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="panel-footer">
-                        <div>
-                            <input type="hidden" value="You" id="txtnotificationuser" />
-                            <input id="txttitle" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a title..." />
-                            <input id="txtlink" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a link if exists..." />
-                            <textarea id="txtnotification"></textarea>
-                            <div class="text-right p-t-8" >
-                                <button class="btn btn-warning btn-sm" id="btnsendnotification">Send</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <table id="notificationdata" class="table table-striped table-bordered compact notificationdata">
+                <thead>
+                    <tr>
+                        <th>Content</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td></td><td></td></tr>
+                </tbody>
+            </table>
+    
+            <input type="hidden" value="You" id="txtnotificationuser" />
+            <input id="txttitle" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a title..." />
+            <input id="txtlink" maxlength="250" type="text" class="form-control input-sm" placeholder="Type a link if exists..." />
+            <textarea id="txtnotification"></textarea>
+            <div class="text-right p-t-8" >
+                <button class="btn btn-warning btn-sm" id="btnsendnotification">Send</button>
             </div>
+                        
         </div>
     </div>
 </div>

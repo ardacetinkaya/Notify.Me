@@ -4,34 +4,51 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>@ViewData["Title"]</h2>
+<link rel="stylesheet" type="text/css" href="~/css/util.css">
+<link rel="stylesheet" type="text/css" href="~/css/main.css">
+<link rel="stylesheet" type="text/css" href="~/css/chat.css">
+<div class="limiter" style="margin-top:-55px">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <section>
+                <form class="login100-form validate-form" method="POST">
+                    <span class="login100-form-title p-b-43">
+                        Register
+                    </span>
+                   <div class="p-b-20">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                    </div>
+                    
+                    <div class="wrap-input100 validate-input" >
+                        <input asp-for="Input.Email" class="input100" type="text">
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Email</span>
+                    </div>
+                    
+                    
+                    <div class="wrap-input100 validate-input">
+                        <input asp-for="Input.Password" class="input100" type="password" >
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Password</span>
+                    </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <div class="wrap-input100 validate-input">
+                        <input asp-for="Input.ConfirmPassword" class="input100" type="password" >
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Confirm Password</span>
+                    </div>
+            
+                    <div class="container-login100-form-btn">
+                       <button type="submit" class="btn btn-info btn-sm login100-form-btn"> <span class="glyphicon glyphicon-log-in"></span></button>
+                    </div>
+                    
+                </form>   
+            </section>
+            <div class="login100-more p-t-150 p-r-40 p-l-40" style="background-image:url('/images/showcase.jpg'); ">
+
+                
             </div>
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-default">Register</button>
-        </form>
+        </div>
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
