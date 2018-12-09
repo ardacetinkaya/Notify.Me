@@ -37,7 +37,7 @@ namespace NotifyMe
             });
 
             services.AddHealthChecks()
-                    .AddCheck<CustomCheck>();
+                    .AddCheck<CustomCheck>("CustomCheck");
             
             services.AddLogging();
             services.AddTransient<IVisitorService, VisitorService>();
@@ -105,7 +105,7 @@ namespace NotifyMe
 
         }
 
-        private static Task WriteAsJson(HttpContext httpContext,CompositeHealthCheckResult result)
+        private static Task WriteAsJson(HttpContext httpContext,HealthReport result)
         {
             httpContext.Response.ContentType = "application/json";
             var json = JsonConvert.SerializeObject(result,Formatting.Indented);

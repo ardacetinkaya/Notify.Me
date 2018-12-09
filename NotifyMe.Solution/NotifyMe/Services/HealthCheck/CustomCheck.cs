@@ -16,7 +16,8 @@ namespace NotifyMe.Services
         {
             _visitorService = (IVisitorService)provider.GetService(typeof(IVisitorService));
         }
-        public async Task<HealthCheckResult> CheckHealthAsync(CancellationToken cancellationToken = default(CancellationToken))
+
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -30,14 +31,14 @@ namespace NotifyMe.Services
                     data.Add("LastUpdateDate", lastDate.ToString());
                     data.Add("DifferenceAsDays", days.ToString());
 
-                    return HealthCheckResult.Unhealthy("No connection is done", data);
+                    return HealthCheckResult.Unhealthy("No connection is done",null, data);
                 }
 
                 return HealthCheckResult.Healthy("Ok");
             }
             catch (System.Exception ex)
             {
-                return HealthCheckResult.Unhealthy(ex);
+                return HealthCheckResult.Unhealthy(ex.Message);
             }
 
         }
